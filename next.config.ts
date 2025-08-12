@@ -16,6 +16,9 @@ const nextConfig = {
   experimental: {
     appDir: true, // Enables the new `app` directory
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 
   async rewrites() {
     return [

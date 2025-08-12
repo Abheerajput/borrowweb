@@ -6,7 +6,7 @@ import logo from "../../../public/assets/borrowdirectlogo.png";
 import Image from "next/image";
 
 interface SidebarProps {
-  closeSidebar?: () => void; // Used for the mobile close button
+  closeSidebar?: () => void; 
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {

@@ -58,7 +58,7 @@ const loanApplicationsData = [
 ];
 
 // Helper function to get styling for status badges
-const getStatusClasses = (status) => {
+const getStatusClasses = (status:any) => {
   switch (status.toLowerCase()) {
     case 'accepted': return 'bg-green-100 text-green-800';
     case 'declined': return 'bg-red-100 text-red-800';
@@ -68,8 +68,20 @@ const getStatusClasses = (status) => {
   }
 };
 
+// Define the Application type
+interface Application {
+  id: number;
+  title: string;
+  purchasePrice: number;
+  downPayment: number;
+  closingDate: string;
+  incomeType: string;
+  status: string;
+  declineReason?: string;
+}
+
 // --- Child Component for a single Application Card ---
-const ApplicationCard = ({ application }) => {
+const ApplicationCard = ({ application }: { application: Application }) => {
   
   // Conditionally render buttons based on application status
   const renderActionButtons = () => {

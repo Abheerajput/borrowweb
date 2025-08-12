@@ -1,12 +1,11 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 const totalSteps = 7;
 interface BorrowerDetailsProps {
-  borrowerName: string;
+  borrowerName?: string;
   onBack: () => void;
 }
 

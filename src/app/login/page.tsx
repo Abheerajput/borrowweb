@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import backgroundimg from "../../../public/assets/backgroundimg.webp"
 import logo from "../../../public/assets/logo.png"
 import Image from 'next/image'
@@ -7,9 +8,17 @@ import Image from 'next/image'
 // import lawyer from '../../../public/assets/lawyer.png'
 // import keypartner from '../../../public/assets/KeyPartner.png'
 // import Choose from "../choselevel/page"
-import Register from "../register/page"
-import Verify from "../verify/page"
+import Register from "../register/Register"
 const page = () => {
+   const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // This will run only on the client
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; // Prevent rendering on server
+
   return (
     <div className='px-[5%] py-[2%] h-screen'>
         <div className='flex xs:flex-col w-full gap-6'>

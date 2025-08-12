@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "../sidebar/page";
+import Sidebar from "../sidebar/Sidebar";
 import { FaBars } from "react-icons/fa";
 
 interface LayoutProps {

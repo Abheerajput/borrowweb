@@ -76,7 +76,7 @@ const PropertiesDetails = () => {
     e.preventDefault();
 
     // Prepare data for API: remove mortgage info if not applicable
-    let submissionData: Partial<IPropertyFormData> = { ...formData };
+    const submissionData: Partial<IPropertyFormData> = { ...formData };
     if (!formData.hasMortgage) {
       delete submissionData.lender;
       delete submissionData.currentRate;

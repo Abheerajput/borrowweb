@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { IoIosArrowForward, IoMdArrowRoundBack } from 'react-icons/io'
-import BorrowerDetails from '../borrow/page'
+import BorrowerDetails from '../../../../Component/BorrowerDetails/BorrowerDetails'
 import UploadDocuments from '../documents/UploadDocuments'
 import { usePathname } from "next/navigation";
 const totalSteps = 7;

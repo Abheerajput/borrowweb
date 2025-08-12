@@ -18,7 +18,7 @@ const Page = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
 
   // Helper function to get styling for status badges
-  const getStatusClasses = (status) => {
+  const getStatusClasses = (status:any) => {
     switch (status.toLowerCase()) {
       case 'accepted': return 'bg-green-100 dark:text-black text-green-800';
       case 'declined': return 'bg-red-100 text-red-800';

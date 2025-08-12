@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
+import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/solid";
 import loginimg from "../../../public/assets/loginimg.png";
 import google from "../../../public/assets/google.png";

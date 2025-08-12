@@ -47,7 +47,7 @@ export interface IFormData {
   selfEmployedStartDate?: string;
   selfEmployedEndDate?: string; // Added for past businesses
   netAnnualIncome?: string;
-
+isCurrentIncomeSource?:boolean;
   otherIncomeType?: "Canadian Pension Plan(CPP)" | "Old Age Security" | "Survivor Benefit Pension" | "Other";
   otherIncomeName?: string;
   otherAnnualIncome?: string;

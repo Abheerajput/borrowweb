@@ -1,9 +1,8 @@
 "use client";
-
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowForward, IoMdArrowRoundBack } from "react-icons/io";
-import BorrowerDetails from "../borrow/page";
+import BorrowerDetails from "../../../../Component/BorrowerDetails/BorrowerDetails";
 import { usePathname } from "next/navigation";
 const totalSteps = 7;
 const BorrowersPage = () => {
@@ -27,7 +26,7 @@ const BorrowersPage = () => {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <BorrowerDetails
-          borrowerName={activeBorrower}
+          borrowerName={activeBorrower || ''}
           onBack={() => setActiveBorrower(null)}
         />
       </div>
