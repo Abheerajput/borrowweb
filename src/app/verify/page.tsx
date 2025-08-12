@@ -4,7 +4,7 @@ import loginimg from "../../../public/assets/loginimg.png";
 import google from "../../../public/assets/google.png";
 import logo from "../../../public/assets/logo.png";
 import fb from "../../../public/assets/fb.png";
-import backgroundimg from "../../../public/assets/backgroundimg.png";
+import backgroundimg from "../../../public/assets/backgroundimg.webp";
 import Image from 'next/image';
 import Link from 'next/link';
 
