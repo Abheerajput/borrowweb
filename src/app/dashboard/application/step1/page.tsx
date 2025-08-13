@@ -63,7 +63,7 @@ const page = () => {
         </span>
 <span>
  {isClient && (
-          <span className="flex md:flex-col-reverse dark:text-black  sm:flex-col-reverse items-center gap-2">
+          <span className="flex flex-col-reverse dark:text-black  sm:flex-col-reverse items-end gap-2">
             {/* Dots */}
             <div className="flex gap-1">
               {Array.from({ length: totalSteps }).map((_, index) => (

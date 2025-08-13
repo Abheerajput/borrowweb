@@ -54,7 +54,7 @@ const AddReferralPage = () => {
     const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
   const stepMatch = pathname.match(/step(\d+)/);
-  const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
+  const currentStep = 7;
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -66,12 +66,12 @@ const AddReferralPage = () => {
             <Link href="/dashboard/application/step7">
               <IoMdArrowRoundBack />
             </Link>
-            Borrowers
+          Review & Submit
           </span>
         </span>
 
         {isClient && (
-          <span className="flex items-center gap-2">
+          <span className="flex flex-col-reverse  items-end  gap-2">
             {/* Dots */}
             <div className="flex gap-1">
               {Array.from({ length: totalSteps }).map((_, index) => (
@@ -235,21 +235,7 @@ const AddReferralPage = () => {
           </AccordionSection>
 
           {/* 6. Properties */}
-          <AccordionSection number={6} title="">
-             <div className="flex justify-between items-start">
-                <div className="flex items-start gap-3">
-                  <span className="bg-blue-100 p-2.5 rounded-full flex items-center justify-center">
-                    <FiUser className="text-blue-800" size={18} />
-                  </span>
-                  <div>
-                    <p className="  text-black  font-semibold ">Jane Cooper</p>
-                    <p className=""></p>
-                  </div>
-                </div>
-                <EditButton />
-              </div>
-          </AccordionSection>
-
+       
 <AccordionSection number={6} title="Properties">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">

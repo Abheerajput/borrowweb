@@ -60,7 +60,7 @@ const BorrowerDetails: React.FC<BorrowerDetailsProps> = ({
         </span>
 
         {isClient && (
-          <span className="flex items-center gap-2">
+          <span className="flex flex-col-reverse items-end gap-2">
             {/* Dots */}
             <div className="flex gap-1">
               {Array.from({ length: totalSteps }).map((_, index) => (

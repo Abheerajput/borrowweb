@@ -75,16 +75,16 @@ const DocumentsDetails: React.FC<{ DocumentName: string }> = ({
         
         <span className='flex gap-2 '>
           <span className='flex justify-center text-black gap-2 items-center'>
-            <Link href="/dashboard/application/step2">
+            <Link href="/dashboard/application/step2" className="cursor-pointer flex gap-2 items-center">
             <IoMdArrowRoundBack/>
-            </Link>
             Documents
+            </Link>
           </span>
          
         </span>
 
      {isClient && (
-          <span className="flex items-center gap-2">
+          <span className="flex items-end flex-col-reverse gap-2">
             {/* Dots */}
             <div className="flex gap-1">
               {Array.from({ length: totalSteps }).map((_, index) => (

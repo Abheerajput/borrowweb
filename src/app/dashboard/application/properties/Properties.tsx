@@ -117,13 +117,13 @@ const PropertiesDetails = () => {
     <div className="min-h-screen min-w-full flex flex-col p-4">
       {/* Header and Progress Bar */}
       <div className="flex justify-between items-center">
-        <Link href="/dashboard/application/step1" className="flex gap-2 items-center text-gray-700 hover:text-black">
+        <Link href="/dashboard/application/step5" className="flex gap-2 items-center text-gray-700 hover:text-black">
           <IoMdArrowRoundBack className="text-xl" />
           <span className="font-semibold">Properties</span>
         </Link>
 
         {isClient && (
-          <span className="flex items-center gap-2">
+          <span className="flex flex-col-reverse items-end gap-2">
             <div className="flex gap-1">
               {Array.from({ length: totalSteps }).map((_, index) => (
                 <div key={index} className={`h-1.5 w-5 rounded-full ${index < currentStep ? "bg-[#013E8C]" : "bg-gray-200"}`}></div>
