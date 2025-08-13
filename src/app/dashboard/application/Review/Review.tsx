@@ -97,8 +97,12 @@ const ReferralDetails = () => {
   return (
     <div className="min-h-screen min-w-full flex flex-col p-4">
       {/* Header and Progress Bar */}
+
+
+
+      
       <div className="flex justify-between items-center">
-        <Link href="/dashboard/application/step5" className="flex gap-2 items-center text-gray-700 hover:text-black">
+        <Link href="/dashboard/application/step7" className="flex gap-2 items-center text-gray-700 hover:text-black">
           <IoMdArrowRoundBack className="text-xl" />
           <span className="font-semibold">Referral Information</span>
         </Link>
@@ -175,9 +179,11 @@ const ReferralDetails = () => {
           <hr className="text-black my-6" />
           
           <div className="flex w-full justify-end mt-6">
-            <button type="submit" className="bg-[#013E8C] min-w-[200px] text-white px-6 py-3 rounded-full hover:bg-[#002e6b] transition-colors">
+            <Link href="/dashboard/application/submit">
+            <button  className="bg-[#013E8C] min-w-[200px] text-white px-6 py-3 rounded-full hover:bg-[#002e6b] transition-colors">
               Continue
             </button>
+            </Link>
           </div>
         </form>
       </div>

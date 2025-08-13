@@ -36,7 +36,7 @@ const page = () => {
 </h2>
             <p className='text-[27px] font-semibold text-[#013E8C] cursor-pointer'>Get Started</p>
             </span>
-            <p className='text-[#595959] pb-4 font-medium text-center'>Identify yourself as a Borrower, Lender, Lawyer, or Referral Partner to streamline your journey and access tailored features.</p>
+            <p className='text-[#595959] py-4 font-normal text-center'>Identify yourself as a Borrower, Lender, Lawyer, or Referral Partner to streamline your journey and access tailored features.</p>
 
 <div className=' grid grid-cols-2 xs:grid-cols-1 gap-6'>
     

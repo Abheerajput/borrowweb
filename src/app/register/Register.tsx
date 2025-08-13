@@ -81,7 +81,7 @@ const Page = () => {
       </div>
 
       {activeTab === "register" ? (
-        <div className=" ">
+        <div className=" px-[4%]">
          
         <h1 className="xs:text-[15px] text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
@@ -248,7 +248,7 @@ const Page = () => {
           </form>
         </div>
       ) : (
-        <div className="min-w-full">
+        <div className="min-w-full  px-[4%]">
            <h1 className="xs:text-[15px] text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"

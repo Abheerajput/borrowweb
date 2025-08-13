@@ -32,9 +32,9 @@ const ForgotPassword = () => {
 </div>
      
       
-     <div className='min-w-[60%] xs:min-w-[100%]  text-center flex flex-col justify-center'>
+     <div className='min-w-[60%] px-[4%] xs:min-w-[100%]  text-center flex flex-col justify-center'>
         <h2 className="text-2xl font-semibold text-[#111827] mb-2">Forgot Your Password</h2>
-        <p className="text-gray-600 text-sm mb-6">
+        <p className="text-gray-600 text-[15px] flex-wrap px-[6%] text-sm mb-6">
           Enter the OTP sent to your email to Setup New Password of Your Account. This help keep your information secure.
         </p>
 
