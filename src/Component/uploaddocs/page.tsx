@@ -30,18 +30,18 @@ const UploadBox: React.FC<UploadBoxProps> = ({ label, description }) => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg  w-full h-72 hover:border-[#013E8C] transition cursor-pointer overflow-hidden"
+      className="flex flex-col min-h-screen items-center justify-center border-2 border-dashed border-gray-300 rounded-lg  w-full h-72 hover:border-[#013E8C] transition cursor-pointer overflow-hidden"
       onClick={handleClick}
     >
       {preview ? (
         <img
           src={preview}
           alt="Preview"
-          className="min-w-full min-h-full object-cover rounded-lg"
+          className="min-w-full min-h-[200px] object-cover rounded-lg"
         />
       ) : (
         <>
-          <FaRegImage className="text-3xl text-gray-400 mb-2" />
+          <FaRegImage className="text-3xl  text-gray-400 mb-2" />
           <p className="font-medium text-gray-700">{label}</p>
           <p className="text-xs text-gray-500">{description}</p>
         </>
@@ -57,9 +57,7 @@ const UploadBox: React.FC<UploadBoxProps> = ({ label, description }) => {
   );
 };
 
-const page: React.FC<{ DocumentName: string }> = ({
-  DocumentName,
-}) => {
+const page: React.FC<{ DocumentName: string }> = () => {
    const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
   const stepMatch = pathname.match(/step(\d+)/);
@@ -75,7 +73,7 @@ const page: React.FC<{ DocumentName: string }> = ({
         
         <span className='flex gap-2 '>
           <span className='flex justify-center text-[#111827] font-semibold gap-2 items-center'>
-            <Link href="/dashboard/application/step2">
+            <Link href="/dashboard/application/lender">
             <IoMdArrowRoundBack/>
             </Link>
             Documents
@@ -99,8 +97,8 @@ const page: React.FC<{ DocumentName: string }> = ({
       <div className="text-[#111827] font-semibold mb-3">
 Attach Document 1
       </div>
-      <div className=" min-h-[300px] flex  flex-col justify-between  gap-4 mb-6">
-        <div className=" grid xs:grid-cols-1 gap-4 w-full grid-cols-2">
+      <div className=" flex  flex-col justify-between  gap-4 mb-6">
+        <div className=" grid xs:grid-cols-1  gap-4 min-h-[200px] w-full grid-cols-2">
 
         <UploadBox
           label="Upload Documents"

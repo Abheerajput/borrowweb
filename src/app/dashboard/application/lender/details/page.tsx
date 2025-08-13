@@ -91,7 +91,7 @@ const ApplicationCard = ({ application }: { application: Application }) => {
           <div className="min-w-full flex justify-center my-4 items-center">
 
              <Link 
-        href="/dashboard/application/lender/uploaddocs" 
+        href="/dashboard/application/uploaddocs" 
         className="text-white bg-[#013E8C] py-3 rounded-full w-full text-center hover:bg-opacity-90 transition-colors"
       >
         Upload Document
