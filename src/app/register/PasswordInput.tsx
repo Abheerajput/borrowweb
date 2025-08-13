@@ -40,7 +40,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
         {/* --- Lock Icon (Left) --- */}
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
           <LockOpenIcon
-            className={`h-5 w-5 text-gray-400 font-normal transition-opacity duration-300 ${
+            className={`h-5 w-5  text-black font-normal transition-opacity duration-300 ${
               hasContent ? 'opacity-0' : 'opacity-100'
             }`}
             aria-hidden="true"
@@ -60,7 +60,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="block w-full font-normal rounded-full border border-[#D9D9D9] h-[40px] pl-11 pr-12"
+          className="block w-full font-normal text-black rounded-full border border-[#D9D9D9] h-[40px] pl-11 pr-12"
         />
 
         {/* --- Eye Icon (Right) --- */}

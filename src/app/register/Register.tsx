@@ -104,7 +104,7 @@ const Page = () => {
                 <input
                   type="text"
                   placeholder="Enter your first name"
-                  className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9]  rounded-full focus:outline-none font-normal  focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 w-full h-[40px] px-4 text-black border border-[#D9D9D9]  rounded-full focus:outline-none font-normal  focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -114,7 +114,7 @@ const Page = () => {
                 <input
                   type="text"
                   placeholder="Enter your last name"
-                  className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 w-full h-[40px] px-4 border text-black border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -135,7 +135,7 @@ const Page = () => {
                   type="email"
                   id="email"
                   placeholder="borrowdirect@gmail.com"
-                  className="pl-11 pr-4 w-full h-[40px] border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
+                  className="pl-11 pr-4 w-full text-black h-[40px] border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -149,7 +149,7 @@ const Page = () => {
             <input
               type="text"
               placeholder="borrowdirect@gmail.com"
-              className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full h-[40px] text-black px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -168,7 +168,7 @@ const Page = () => {
       {/* Upload Box */}
       <label
         htmlFor="verify-id-upload"
-        className="w-[50px] h-[50px] border border-dashed border-[#D9D9D9] flex items-center justify-center rounded-lg cursor-pointer hover:border-blue-500 transition overflow-hidden"
+        className="w-[50px] h-[50px] border border-dashed text-black border-[#D9D9D9] flex items-center justify-center rounded-lg cursor-pointer hover:border-blue-500 transition overflow-hidden"
       >
         {file ? (
           file.type.startsWith("image/") ? (
@@ -197,8 +197,8 @@ const Page = () => {
                 value={phone}
                 onChange={setPhone} // The 'phone' state will be updated with the full number
                 containerClass="mt-2"
-                inputClass="!w-full !h-[40px] !pl-12 !pr-4 !border-[#D9D9D9] font-normal !rounded-full focus:!ring-2 focus:!ring-blue-500 focus:!border-blue-500"
-                buttonClass="!border-[#D9D9D9] !rounded-l-full !bg-white"
+                inputClass="!w-full !h-[40px] !pl-12 !pr-4 !border text-black font-normal !rounded-full focus:!ring-2 focus:!ring-blue-500 focus:!border-blue-500"
+                buttonClass="!border-[#D9D9D9] !rounded-l-full  text-black !bg-white"
                 inputProps={{
                   name: "phone",
                   required: true,
@@ -269,7 +269,7 @@ const Page = () => {
               <input
                 type="email"
                 placeholder="borrowdirect@gmail.com"
-                className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full h-[40px] px-4 border text-black border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
