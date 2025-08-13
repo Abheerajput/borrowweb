@@ -1,7 +1,7 @@
 // src/app/dashboard/application/step4/EmployedForm.tsx
 
 import React from "react";
-import { IFormData } from "../step4/step4/page"; // Import the shared interface
+import { IFormData } from "../step4/page"; // Import the shared interface
 import { FaDollarSign } from "react-icons/fa";
 import { PiCompassRoseFill } from "react-icons/pi";
 

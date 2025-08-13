@@ -1,7 +1,7 @@
 // src/app/dashboard/application/step4/SelfEmployedForm/SelfEmployedForm.tsx
 
 import React from "react";
-import { IFormData } from "../step4/step4/page"; // Adjust path if necessary
+import { IFormData } from "../step4/page"; // Adjust path if necessary
 import Image from "next/image";
 import { FaDollarSign } from "react-icons/fa";
 import { PiCompassRoseFill } from "react-icons/pi";
