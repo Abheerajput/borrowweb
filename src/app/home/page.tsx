@@ -17,7 +17,7 @@ const Page = () => {
         - Uses min-h-screen to ensure it fills the viewport height without causing overflow.
         - flex-col for mobile (default), and lg:flex-row for large screens.
       */}
-<div className="flex xs:flex-col flex-row w-full px-[2%]  overflow-y-visible bg-white">
+<div className="flex xs:flex-col flex-row w-full px-[2%] min-h-screen overflow-y-visible bg-white">
         <div className="w-[40%] py-[1%] min-h-screen xs:w-full">
 <div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
  <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
