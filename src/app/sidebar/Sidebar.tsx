@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { FaBell, FaUser, FaThList, FaTimes } from "react-icons/fa";
-import logo from "../../../public/assets/borrowdirectlogo.png";
+import logo from "../../../public/assets/dashboardlogoo.png";
 import Image from "next/image";
 
 interface SidebarProps {
-  closeSidebar?: () => void; 
+  closeSidebar?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
@@ -15,14 +15,24 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
   const pathname = usePathname();
 
   const menuItems = [
-    { title: "Applications", icon: <FaThList />, path: "/dashboard/application" },
-    { title: "Notifications", icon: <FaBell />, path: "/dashboard/notifications" },
+    {
+      title: "Applications",
+      icon: <FaThList />,
+      path: "/dashboard/application",
+    },
+    {
+      title: "Notifications",
+      icon: <FaBell />,
+      path: "/dashboard/notifications",
+    },
     { title: "Profile", icon: <FaUser />, path: "/dashboard/profile" },
   ];
 
   // This hook ensures the correct menu item is highlighted when the page loads or URL changes.
   useEffect(() => {
-    const currentItem = menuItems.find(item => pathname.startsWith(item.path));
+    const currentItem = menuItems.find((item) =>
+      pathname.startsWith(item.path)
+    );
     if (currentItem) {
       setActiveItem(currentItem.title);
     }
@@ -40,12 +50,15 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
     <div className="min-w-full min-h-screen  h-full p-4 rounded-xl  bg-white flex flex-col">
       {/* Header section with Logo and mobile-only close button */}
       <div className="flex justify-between items-center mb-10">
-        <div className="flex-grow">
-          <Image src={logo} alt="logo" width={160} priority />
+        <div className="flex-grow flex justify-center items-center">
+          <Image src={logo} alt="Borrow Logo" className="w-[70%]" />
         </div>
-        
+
         {/* The close button is ONLY visible on small screens (the inverse of sm) */}
-        <button onClick={closeSidebar} className="text-gray-600 mt-[-50px] text-2xl md:hidden lg:hidden xl:hidden sm:hidden">
+        <button
+          onClick={closeSidebar}
+          className="text-gray-600 mt-[-50px] text-2xl md:hidden lg:hidden xl:hidden sm:hidden"
+        >
           <FaTimes />
         </button>
       </div>
@@ -117,7 +130,7 @@ export default Sidebar;
 //         <div className="flex-grow flex justify-center sm:justify-start">
 //           <Image src={logo} alt="logo" width={160} style={{ width: 'auto', height: 'auto' }} priority />
 //         </div>
-        
+
 //         {/* Mobile-only Close button, hidden on desktop */}
 //         <button onClick={closeSidebar} className="text-gray-600 text-2xl sm:hidden">
 //           <FaTimes />
@@ -145,19 +158,6 @@ export default Sidebar;
 // };
 
 // export default Sidebar;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useState } from "react";
 // import Image from "next/image";
@@ -196,7 +196,6 @@ export default Sidebar;
 //     </div>
 //   );
 // };
-
 
 // export default Sidebar;
 

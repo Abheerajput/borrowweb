@@ -52,7 +52,7 @@ const page = () => {
       {/* video section */}
       <div>
         <div className="flex gap-4 mt-2">
-          <Image src={video} alt="" />
+          <Image src={video} alt=""  className="max-h-[300px]"/>
         </div>
       </div>
 

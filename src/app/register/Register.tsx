@@ -60,7 +60,7 @@ const Page = () => {
   return (
     <div className="px-[5%] py-10 min-h-screen flex flex-col items-center">
       {/* Tabs */}
-      <div className="bg-[#F1F1F1] w-[80%] max-w-xl flex items-center justify-between rounded-full mb-8 shadow-sm">
+      <div className="bg-[#F1F1F1] py-[6px] px-2 w-[80%] max-w-xl flex items-center justify-between rounded-full mb-2 shadow-sm">
         <div
           className={getTabClassName("register")}
           onClick={() => setActiveTab("register")}
@@ -78,18 +78,18 @@ const Page = () => {
       {activeTab === "register" ? (
         <>
          
-        <h1 className="text-2xl md:text-3xl font-semibold mb-2">
+        <h1 className="xs:text-[15px] sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
           </h1>
-          <p className="text-sm md:text-base text-gray-600 max-w-lg mx-auto">
+          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."
               : "Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders."}
           </p>
 
-          <form className="w-full max-w-3xl space-y-6">
+          <form className="w-full max-w-3xl space-y-4">
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -227,7 +227,7 @@ const Page = () => {
             </div>
 
             <div className="space-y-4">
-              <p className="text-sm text-[#111827]">
+              <p className="text-sm py-2 text-[#111827]">
                 By registering, I agree to the
                 <span className="text-[#013E8C] font-medium cursor-pointer px-1">
                   Terms & Conditions
@@ -237,31 +237,32 @@ const Page = () => {
                   Privacy Policy
                 </span>
               </p>
+              <Link href="/verify">
               <button
                 type="button"
-                onClick={handleLogin}
                 className="w-full bg-[#013E8C] h-[40px] text-white rounded-full font-medium transition hover:bg-blue-900"
-              >
+                >
                 Sign Up
               </button>
+                </Link>
             </div>
           </form>
         </>
       ) : (
         <>
-          <h1 className="text-[24px] md:text-3xl font-semibold mb-2">
+           <h1 className="xs:text-[15px] sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
           </h1>
-          <p className="text-sm md:text-base text-gray-600 max-w-lg mx-auto">
+          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."
               : "Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders."}
           </p>
 
 
-          <form className="w-full mt-6 max-w-full space-y-6">
+          <form className="w-full  max-w-full space-y-4">
             <div>
               <label className="text-sm font-medium text-[#111827]">
                 Email
@@ -273,14 +274,17 @@ const Page = () => {
               />
             </div>
 
+ <div className="grid grid-cols-1  gap-6">
+              <PasswordInput
+                label="Password"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+             
+            </div>
       
-            <PasswordInput
-              label="Password"
-              id="login-password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
 
             <div className="text-right py-3 text-sm">
               <Link href="/forgotpassword">
@@ -302,9 +306,9 @@ const Page = () => {
       )}
 
       {/* Common Footer */}
-      <div className="mt-10 flex flex-col items-center gap-4">
+      <div className="mt-4 flex flex-col items-center gap-2">
         <Image src={loginimg} alt="Login Visual" className="w-[280px] " />
-        <div className="flex gap-6 mt-4">
+        <div className="flex gap-6">
           <Image
             src={google}
             alt="Google Login"

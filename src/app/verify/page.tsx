@@ -11,57 +11,63 @@ import Link from 'next/link';
 const page = () => {
   return (
     <>
-     <div className='px-[5%] py-[2%] flex  xs:flex-col w-full h-screen'>
-        <div className='flex xs:flex-col w-1/2  xs:min-w-full gap-6'>
+<div className="flex xs:flex-col flex-row w-full px-[2%]  overflow-y-visible bg-white">
 
-<div className='backgroundimg xs:min-w-[100%]  min-w-full min-h-screen  rounded-[30px] bg-cover bg-center flex items-start justify-center relative'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
-<div className='flex flex-col pt-4 px-[5%] gap-6'>
-
-<div className=''>
-    <Image src={logo} alt="" />
+  <div className="w-[40%] py-[1%] min-h-screen xs:w-full">
+<div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
+ <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
+              <div className="">
+                              <Image src={logo} alt="Borrow Logo" className="w-auto h-[50px]" />
+              </div>
+              <div className="flex flex-col gap-4">
+                {/* Responsive font sizes */}
+                <h1 className="xs:text-[15px] sm:text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-white font-medium">
+                  Join BORROW and Take Control of Your Mortgage Experience
+                </h1>
+                <p className="xs:text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-white font-normal">
+                  Create your account to explore personalized mortgage offers,
+                  apply with ease, and stay connected with top lenders.
+                </p>
+              </div>
+            </div>
 </div>
-<div className='flex flex-col gap-4 '>
-    <h1 className='text-[32px] text-white font-medium'>Join BORROW and Take Control of Your Mortgage Experience</h1>
-    <p className='text-[18px] text-white font-normal'>Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders.</p>
-</div>
-</div>
 </div>
 
 
-<div className='w-1/2 xs:min-w-[100%]  flex justify-center'>
-   
 
-
-        </div>
-        </div>
-         <div className="flex flex-col xs:min-w-full w-1/2 items-center xs:min-h-full min-h-screen px-[5%] py-[4%] bg-white">
-      <h1 className="text-[34px] font-semibold text-[#000000] text-center mt-10">
+         <div className="flex flex-col xs:min-w-full w-[60%] items-center xs:min-h-full min-h-screen px-[5%] py-[4%] bg-white">
+      <h1 className="xs:text-[15px] sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold text-[#000000] text-center mt-10">
         Verify Your Identity
       </h1>
 
-      <p className="text-[18px] text-[#595959] font-medium text-center mt-4 max-w-md">
+      <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] text-[#595959] font-medium text-center mt-4 max-w-md">
         Enter the OTP sent to your email (or phone) to verify your account. This helps keep your information secure.
       </p>
+<div>
 
-      <p className="text-black font-semibold w-full text-start mt-8">Enter OTP</p>
 
-      <div className="flex gap-4 mt-4">
+      <div className="flex flex-col  gap-4 mt-4">
+              <p className="text-black  xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] font-semibold w-full text-start ">Enter OTP</p>
+<div className='flex gap-4'>
+
         {[...Array(6)].map((_, index) => (
           <input
-            key={index}
-            type="text"
-            maxLength={1}
-            className="w-12 h-12 xs:w-8 xs:h-8 text-center text-lg border border-[#D9D9D9] rounded-full outline-none focus:ring-2 focus:ring-blue-500"
+          key={index}
+          type="text"
+          maxLength={1}
+          className="w-12 h-12 xs:w-8 xs:h-8 text-center text-lg border border-[#D9D9D9] rounded-full outline-none focus:ring-2 focus:ring-blue-500"
           />
         ))}
+        </div>
       </div>
+        </div>
 
       <div className="w-full flex flex-col items-center mt-6">
         <p className="text-[#111827] w-full flex justify-center font-normal">
           Didn’t receive code?
           <span className="text-[#013E8C] ml-1 cursor-pointer hover:underline">Resend Again</span>
         </p>
-<Link href="/dashboard/application" className='w-full'>
+<Link href="/dashboard/application" className='w-[80%]'>
         <button className="bg-[#013E8C] cursor-pointer text-white font-semibold px-12 py-2 w-full rounded-full mt-4">
           Verify
         </button>
