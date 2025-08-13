@@ -86,7 +86,7 @@ const page: React.FC = () => {
                                 alt="Profile Picture"
                                 width={100}
                                 height={100}
-                                className="rounded-full object-cover w-24 h-24 border-2 border-gray-200"
+                                className="rounded-full  object-cover w-24 h-24 border-2 border-gray-200"
                             />
                             <button 
                                 type="button"
@@ -128,22 +128,22 @@ const page: React.FC = () => {
                         <label htmlFor="email" className="block  font-light text-[#111827] text-[15px] mb-1">Email*</label>
                         <div className="relative">
                             <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input type="email" id="email" name="email" value={profileData.email} onChange={handleChange} className="w-full p-3 pl-12 border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 transition" readOnly/>
+                            <input type="email" id="email" name="email" value={profileData.email} onChange={handleChange} className="w-full p-3 pl-12 text-black border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 transition" readOnly/>
                             <FiCheckCircle className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600" />
                         </div>
                     </div>
 
                     {/* --- Phone Number --- */}
                     <div className="mb-8">
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-1">Phone Number*</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-black mb-1">Phone Number*</label>
                         <div className="flex items-center gap-3">
                             <div className="relative flex-grow">
-                                <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-600">
+                                <div className="absolute left-4 top-1/2 text-black -translate-y-1/2 flex items-center gap-2 ">
                                     <FaCanadianMapleLeaf className="text-red-600" />
                                     <span>|</span>
                                 </div>
-                                <input type="tel" id="phone" name="phone" value={profileData.phone} onChange={handleChange} className="w-full p-3 pl-3 relative border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition" />
-                                 <button type="button" className="px-5 top-[6.5px] right-[10px] absolute py-2 border border-gray-300 rounded-full text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+                                <input type="tel" id="phone" name="phone" value={profileData.phone} onChange={handleChange} className="w-full p-3 pl-3 text-black relative border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition" />
+                                 <button type="button" className="px-5 top-[6.5px] right-[10px] text-black absolute py-2 border border-gray-300 rounded-full text-sm font-semibold  hover:bg-gray-50 transition">
                                 Verify
                             </button>
                             </div>
