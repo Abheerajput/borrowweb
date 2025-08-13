@@ -19,31 +19,27 @@ const Page = () => {
       */}
 <div className="flex xs:flex-col flex-row w-full px-[2%]  overflow-y-visible bg-white">
         <div className="w-[40%] py-[1%] min-h-screen xs:w-full">
-          <div
-            className="backgroundimg w-full xs:min-h-screen min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6"
-            style={{ backgroundImage: `url(${backgroundimg.src})` }}
-          >
-            <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
+<div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
+ <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
               <div className="">
                               <Image src={logo} alt="Borrow Logo" className="w-auto h-[50px]" />
-              
               </div>
               <div className="flex flex-col gap-4">
                 {/* Responsive font sizes */}
-                <h1 className="xs:text-[15px] sm:text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-white font-medium">
+                <h1 className="xs:text-[15px] sm:text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-white font-medium">
                   Join BORROW and Take Control of Your Mortgage Experience
                 </h1>
-                <p className="xs:text-[11px] sm:text-[13px] md:text-[15px] lg:text-[24px] xl:text-[28px] text-white font-normal">
+                <p className="xs:text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-white font-normal">
                   Create your account to explore personalized mortgage offers,
                   apply with ease, and stay connected with top lenders.
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+</div>
+</div>
 
         {/* Right Side: Role Selection */}
-        <div className="w-[60%] xs:w-full px-[4%]  min-h-screen flex items-center justify-center">
+        <div className="w-[60%] xs:w-full px-[4%]  bg-white min-h-screen flex items-center justify-center">
           <div className="flex flex-col gap-2 w-full p-6  items-center">
             <div className="flex flex-col gap-0 items-center text-center">
               {/* Responsive font sizes */}

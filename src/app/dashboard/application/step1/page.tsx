@@ -19,8 +19,11 @@ const page = () => {
   const handleRealtorSelection = (value: boolean) => {
     setHasRealtor(value);
   };
-  const handleCheckboxChange = (value: string) => {
-    setSelected(value === selected ? null : value); 
+  
+   const [selectedUsage, setSelectedUsage] = useState("");
+
+  const handleCheckboxChange = (value:any) => {
+    setSelectedUsage(value);
   };
 
   
@@ -89,122 +92,158 @@ const page = () => {
 
         <div>
       <label className="block font-semibold text-[#111827] text-[18px] mb-2">What are looking to do?*</label>
-      <div className="flex items-center xs:flex-wrap justify-between  py-2 gap-4">
-        <label className="flex text-[16px] text-[#111827] font-medium  items-center gap-2">
-          <input
-            type="checkbox"
-            name="purpose"
-            value="buy"
-            checked={selected === "buy"}
-            onChange={() => handleCheckboxChange("buy")}
-            className="accent-blue-600 w-[15px] h-[15px]"
-          />
-          Buy a Property
-        </label>
+     <div className="flex items-center xs:flex-wrap justify-between py-2 gap-4">
+  <label
+    className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+      selected === "buy" ? "font-semibold" : "font-normal"
+    }`}
+  >
+    <input
+      type="checkbox"
+      name="purpose"
+      value="buy"
+      checked={selected === "buy"}
+      onChange={() => handleCheckboxChange("buy")}
+      className="accent-blue-600 w-[15px] h-[15px]"
+    />
+    Buy a Property
+  </label>
 
-        <label className="flex text-[16px] text-[#111827] font-medium  items-center gap-2">
-          <input
-            type="checkbox"
-            name="purpose"
-            value="refinance"
-            checked={selected === "refinance"}
-            onChange={() => handleCheckboxChange("refinance")}
-            className="accent-blue-600 w-[15px] h-[15px]"
-          />
-          Refinance a Property
-        </label>
+  <label
+    className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+      selected === "refinance" ? "font-semibold" : "font-normal"
+    }`}
+  >
+    <input
+      type="checkbox"
+      name="purpose"
+      value="refinance"
+      checked={selected === "refinance"}
+      onChange={() => handleCheckboxChange("refinance")}
+      className="accent-blue-600 w-[15px] h-[15px]"
+    />
+    Refinance a Property
+  </label>
 
-        <label className="flex text-[16px] text-[#111827] font-medium  items-center gap-2">
-          <input
-            type="checkbox"
-            name="purpose"
-            value="renew"
-            checked={selected === "renew"}
-            onChange={() => handleCheckboxChange("renew")}
-            className="accent-blue-600 w-[15px] h-[15px]"
-          />
-          Renew a Mortgage
-        </label>
-      </div>
+  <label
+    className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+      selected === "renew" ? "font-semibold" : "font-normal"
+    }`}
+  >
+    <input
+      type="checkbox"
+      name="purpose"
+      value="renew"
+      checked={selected === "renew"}
+      onChange={() => handleCheckboxChange("renew")}
+      className="accent-blue-600 w-[15px] h-[15px]"
+    />
+    Renew a Mortgage
+  </label>
+</div>
+
     </div>
            <hr className='text-black' />
+{selected === "refinance" && (
+  <div className="flex gap-1 flex-col justify-between mt-4">
+    {/* Property Value */}
+    <div className="relative w-full">
+      <label
+        className={`block text-[#111827] text-[18px] mb-2 ${
+          selected === "refinance" ? "font-semibold" : "font-normal"
+        }`}
+      >
+        What's the value of your property?
+      </label>
+      <span>
+        <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
+      </span>
+      <input
+        type="number"
+        className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
+        placeholder="e.g 540,000.00"
+      />
+    </div>
 
-      {selected === "refinance" && (
-        <div className="flex gap-1 flex-col justify-between mt-4">
-          {/* Property Value */}
-          <div className="relative w-full">
-            <label className="block font-semibold text-[#111827] text-[18px] mb-2">
-              What's the value of your property?
-            </label>
-            <span>
-              <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
-            </span>
-            <input
-              type="number"
-              className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
-              placeholder="e.g 540,000.00"
-            />
-          </div>
+    {/* Mortgage Balance */}
+    <div className="relative mt-4 w-full">
+      <label
+        className={`block text-[#111827] text-[18px] mb-2 ${
+          selected === "refinance" ? "font-semibold" : "font-normal"
+        }`}
+      >
+        What's your mortgage balance?
+      </label>
+      <span>
+        <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
+      </span>
+      <input
+        type="number"
+        className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
+        placeholder="e.g 540,000.00"
+      />
+    </div>
+  </div>
+)}
 
-          {/* Mortgage Balance */}
-          <div className="relative mt-4 w-full">
-            <label className="block font-semibold text-[#111827] text-[18px] mb-2">
-              What's your mortgage balance?
-            </label>
-            <span>
-              <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
-            </span>
-            <input
-              type="number"
-              className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
-              placeholder="e.g 540,000.00"
-            />
-          </div>
-        </div>
-      )}
+{selected === "renew" && (
+  <div className="flex gap-1 flex-col justify-between mt-4">
+    {/* Renewal Date */}
+    <div>
+      <label
+        className={`block text-[#111827] text-[18px] mb-2 ${
+          selected === "renew" ? "font-semibold" : "font-normal"
+        }`}
+      >
+        What is your renewal date?
+      </label>
+      <input
+        type="date"
+        className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
+        placeholder="2025-07-26"
+      />
+    </div>
 
- {selected === "renew" && (
-        <div className="flex gap-1 flex-col justify-between mt-4">
-          {/* Property Value */}
-           <div>
-          <label className="block font-semibold text-[#111827] text-[18px] mb-2">What is your renewal date?</label>
-         
+    {/* Property Value */}
+    <div className="relative mt-4 w-full">
+      <label
+        className={`block text-[#111827] text-[18px] mb-2 ${
+          selected === "renew" ? "font-semibold" : "font-normal"
+        }`}
+      >
+        What's the value of your property?
+      </label>
+      <span>
+        <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
+      </span>
+      <input
+        type="number"
+        className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
+        placeholder="e.g 540,000.00"
+      />
+    </div>
 
-          <input type="date" 
-          className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"  
-          placeholder='2025-007-26'/>
-          </div>
-       
-          <div className="relative mt-4 w-full">
-            <label className="block font-semibold text-[#111827] text-[18px] mb-2">
-              What's the value of your property?
-            </label>
-            <span>
-              <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
-            </span>
-            <input
-              type="number"
-              className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
-              placeholder="e.g 540,000.00"
-            />
-          </div>
+    {/* Mortgage Balance */}
+    <div className="relative mt-4 w-full">
+      <label
+        className={`block text-[#111827] text-[18px] mb-2 ${
+          selected === "renew" ? "font-semibold" : "font-normal"
+        }`}
+      >
+        What's your mortgage balance?
+      </label>
+      <span>
+        <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
+      </span>
+      <input
+        type="number"
+        className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
+        placeholder="e.g 540,000.00"
+      />
+    </div>
+  </div>
+)}
 
-          {/* Mortgage Balance */}
-          <div className="relative mt-4 w-full">
-            <label className="block font-semibold text-[#111827] text-[18px] mb-2">
-              What's your mortgage balance?
-            </label>
-            <span>
-              <FaDollarSign className="absolute top-[57px] left-[8px] text-gray-500" />
-            </span>
-            <input
-              type="number"
-              className="w-full border rounded-full pl-8 border-gray-300 mt-2 px-4 py-2"
-              placeholder="e.g 540,000.00"
-            />
-          </div>
-        </div>
-      )}
         {/* 2. How many children in your group? */}
          <div className="">
      
@@ -394,62 +433,79 @@ const page = () => {
 
 
 <hr  className='text-black my-4'/>
-        {/* 5. Where have the group been in the past? */}
         <div>
-          <label className="block font-semibold  text-[18px]font-semibold text-[#111827] text-[18px] mb-2">How is this Property used?</label>
-         <div className='flex xs:flex-wrap gap-12 xs:gap-2 py-2'>
+      <label className="block font-semibold text-[18px] text-[#111827] mb-2">
+        How is this Property used?
+      </label>
 
- <label className="flex text-[16px] text-[#111827] font-medium  items-center gap-2">
+      <div className="flex xs:flex-wrap gap-12 xs:gap-2 py-2">
+        <label
+          className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+            selectedUsage === "live" ? "font-semibold" : "font-normal"
+          }`}
+        >
           <input
             type="checkbox"
-            name="purpose"
-            value="buy"
-            // checked={selected === "buy"}
-            // onChange={() => handleCheckboxChange("buy")}
+            name="usage"
+            value="live"
+            checked={selectedUsage === "live"}
+            onChange={() => handleCheckboxChange("live")}
             className="accent-blue-600 w-[15px] h-[15px]"
-            />
+          />
           I’m going to live in it
         </label>
 
-        <label className="flex text-[16px] text-[#111827] font-medium  items-center gap-2">
+        <label
+          className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+            selectedUsage === "liveRent" ? "font-semibold" : "font-normal"
+          }`}
+        >
           <input
             type="checkbox"
-            name="purpose"
-            value="refinance"
-            // checked={selected === "refinance"}
-            // onChange={() => handleCheckboxChange("refinance")}
+            name="usage"
+            value="liveRent"
+            checked={selectedUsage === "liveRent"}
+            onChange={() => handleCheckboxChange("liveRent")}
             className="accent-blue-600 w-[15px] h-[15px]"
-            />
-         I will live in it and also rent out some of it
+          />
+          I will live in it and also rent out some of it
         </label>
-            </div>
-            <div className='flex xs:flex-wrap xs:gap-2 gap-12 py-2'>
+      </div>
 
- <label className="flex   text-[16px] text-[#111827] font-medium  items-center gap-2">
+      <div className="flex xs:flex-wrap xs:gap-2 gap-12 py-2">
+        <label
+          className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+            selectedUsage === "rent" ? "font-semibold" : "font-normal"
+          }`}
+        >
           <input
             type="checkbox"
-            name="purpose"
-            value="buy"
-            // checked={selected === "buy"}
-            // onChange={() => handleCheckboxChange("buy")}
+            name="usage"
+            value="rent"
+            checked={selectedUsage === "rent"}
+            onChange={() => handleCheckboxChange("rent")}
             className="accent-blue-600 w-[15px] h-[15px]"
-            />
-         I will rent it out exclusively
+          />
+          I will rent it out exclusively
         </label>
 
-        <label className="flex text-[16px] text-[#111827] font-medium  items-center gap-2">
+        <label
+          className={`flex text-[16px] text-[#111827] items-center gap-2 ${
+            selectedUsage === "secondHome" ? "font-semibold" : "font-normal"
+          }`}
+        >
           <input
             type="checkbox"
-            name="purpose"
-            value="refinance"
-            // checked={selected === "refinance"}
-            // onChange={() => handleCheckboxChange("refinance")}
-            className="accent-blue-600  w-[15px] h-[15px]"
-            />
+            name="usage"
+            value="secondHome"
+            checked={selectedUsage === "secondHome"}
+            onChange={() => handleCheckboxChange("secondHome")}
+            className="accent-blue-600 w-[15px] h-[15px]"
+          />
           It’s going to be my second home
         </label>
-            </div>
-        </div>
+      </div>
+    </div>
         <hr  className='text-black my-8'/>
 
         {/* 6. What is the outing date? */}

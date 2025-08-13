@@ -10,6 +10,9 @@ import PasswordInput from "./PasswordInput";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+
 const Page = () => {
   const [activeTab, setActiveTab] = useState("register");
   const [password, setPassword] = useState("");
@@ -19,7 +22,9 @@ const Page = () => {
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
     }
+
   };
+  const [phone, setPhone] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const searchParams = useSearchParams();
   const type = searchParams.get("type")?.trim().toLowerCase();
@@ -58,7 +63,7 @@ const Page = () => {
   };
 
   return (
-    <div className="px-[5%] py-10 min-h-screen flex flex-col items-center">
+    <div className=" py-10 min-w-full px-[4%] min-h-screen flex flex-col items-center">
       {/* Tabs */}
       <div className="bg-[#F1F1F1] py-[6px] px-2 w-[80%] max-w-xl flex items-center justify-between rounded-full mb-2 shadow-sm">
         <div
@@ -76,9 +81,9 @@ const Page = () => {
       </div>
 
       {activeTab === "register" ? (
-        <>
+        <div className=" ">
          
-        <h1 className="xs:text-[15px] sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
+        <h1 className="xs:text-[15px] text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
@@ -99,7 +104,7 @@ const Page = () => {
                 <input
                   type="text"
                   placeholder="Enter your first name"
-                  className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9]  rounded-full focus:outline-none font-normal  focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -109,7 +114,7 @@ const Page = () => {
                 <input
                   type="text"
                   placeholder="Enter your last name"
-                  className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -130,7 +135,7 @@ const Page = () => {
                   type="email"
                   id="email"
                   placeholder="borrowdirect@gmail.com"
-                  className="pl-11 pr-4 w-full h-[40px] border border-[#D9D9D9] rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="pl-11 pr-4 w-full h-[40px] border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -144,7 +149,7 @@ const Page = () => {
             <input
               type="text"
               placeholder="borrowdirect@gmail.com"
-              className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -183,29 +188,23 @@ const Page = () => {
         </>
       )}
             {/* Phone Field */}
-            <div>
+             <div>
               <label className="text-sm font-medium text-[#111827]">
                 Phone Number*
               </label>
-              <div className="flex items-center mt-2 border border-[#D9D9D9] rounded-full focus-within:ring-2 focus-within:ring-blue-500">
-                <select
-                  name="country-code"
-                  className="bg-transparent pl-4 pr-2 h-[40px] text-[#111827] focus:outline-none"
-                >
-                  {countries.map((c) => (
-                    <option key={c.name} value={c.code}>
-                      {c.flag} {c.code}
-                    </option>
-                  ))}
-                </select>
-                <div className="border-l border-[#D9D9D9] h-6"></div>
-                <input
-                  type="tel"
-                  name="phone-number"
-                  placeholder="Phone Number"
-                  className="w-full h-[40px] px-4 bg-transparent border-none focus:outline-none"
-                />
-              </div>
+              <PhoneInput
+                country={"us"} // Default country
+                value={phone}
+                onChange={setPhone} // The 'phone' state will be updated with the full number
+                containerClass="mt-2"
+                inputClass="!w-full !h-[40px] !pl-12 !pr-4 !border-[#D9D9D9] font-normal !rounded-full focus:!ring-2 focus:!ring-blue-500 focus:!border-blue-500"
+                buttonClass="!border-[#D9D9D9] !rounded-l-full !bg-white"
+                inputProps={{
+                  name: "phone",
+                  required: true,
+                  placeholder: "Phone Number",
+                }}
+              />
             </div>
 
             {/* Password Fields */}
@@ -247,10 +246,10 @@ const Page = () => {
                 </Link>
             </div>
           </form>
-        </>
+        </div>
       ) : (
-        <>
-           <h1 className="xs:text-[15px] sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
+        <div className="min-w-full">
+           <h1 className="xs:text-[15px] text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
@@ -270,7 +269,7 @@ const Page = () => {
               <input
                 type="email"
                 placeholder="borrowdirect@gmail.com"
-                className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full h-[40px] px-4 border border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -302,7 +301,7 @@ const Page = () => {
                 Login
               </button>
           </form>
-        </>
+        </div>
       )}
 
       {/* Common Footer */}

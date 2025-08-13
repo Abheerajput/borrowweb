@@ -115,11 +115,11 @@ const page: React.FC = () => {
                     <div className="grid xs:grid-cols-1  grid-cols-2 gap-6 mb-6">
                         <div>
                             <label htmlFor="firstName" className="block font-light text-[#111827] text-[15  px]">First Name</label>
-                            <input type="text" id="firstName" name="firstName" value={profileData.firstName} onChange={handleChange} className="w-full  py-[11.3px] px-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition"/>
+                            <input type="text" id="firstName" name="firstName" value={profileData.firstName} onChange={handleChange} className="w-full  py-[11.3px] px-4 border text-black border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition"/>
                         </div>
                         <div>
                             <label htmlFor="lastName" className="block font-light text-[#111827] text-[15px] ">Last Name</label>
-                            <input type="text" id="lastName" name="lastName" value={profileData.lastName} onChange={handleChange} className="w-full  py-[11.3px] px-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition"/>
+                            <input type="text" id="lastName" name="lastName" value={profileData.lastName} onChange={handleChange} className="w-full  py-[11.3px] px-4 border text-black border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition"/>
                         </div>
                     </div>
 

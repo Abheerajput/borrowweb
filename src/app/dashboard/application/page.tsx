@@ -2,10 +2,10 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import img from "../../../../public/assets/applicationnotification.png";
-import img2 from "../../../../public/assets/applicationprofile.png";
+import img2 from "../../../../public/assets/ProfilePicture.png";
 import video from "../../../../public/assets/video.png";
-import home from "../../../../public/assets/homeicon.png";
-import percentage from "../../../../public/assets/percentagebar.png";
+import home from "../../../../public/assets/home.png";
+import percentage from "../../../../public/assets/percentagebar2.png";
 import noapplication from "../../../../public/assets/noapplication.png";
 import Link from "next/link";
  const applicationss = [
@@ -46,7 +46,7 @@ const page = () => {
         </div>
         <div className="flex gap-4 ">
           <Image src={img} alt="" />
-          <Image src={img2} alt="" />
+          <Image src={img2} alt="" className="w-auto h-[40px] object-fill" />
         </div>
       </div>
       {/* video section */}
@@ -66,7 +66,7 @@ const page = () => {
             >
               <div className="items-center flex justify-between">
                 <span>
-                  <Image src={home} alt="Home Icon" />
+                  <Image src={home} alt="Home Icon"  className="w-auto h-[50px]"/>
                 </span>
                 <span>
                   {/* Status can also be dynamic */}
@@ -86,7 +86,7 @@ const page = () => {
                   </p>
                 </span>
                 <span>
-                  <Image src={percentage} alt="Percentage Icon" />
+                  <Image src={percentage} alt="Percentage Icon"  className="w-auto h-[50px]"/>
                 </span>
               </div>
             </div>

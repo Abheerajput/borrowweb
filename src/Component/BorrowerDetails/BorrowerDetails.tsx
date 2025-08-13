@@ -277,28 +277,32 @@ const BorrowerDetails: React.FC<BorrowerDetailsProps> = ({
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block font-semibold text-[#111827] text-[18px] mb-2">
-              How is this property used?
-            </label>
-            <div className="flex gap-4 xs:flex-wrap xs:flex-col text-[#111827] flex-wrap">
-              {["I own it", "I live with my parents", "I rent", "Other"].map(
-                (option) => (
-                  <label key={option} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="propertyUse"
-                      value={option}
-                      className="accent-blue-600 w-[15px] h-[15px]"
-                      checked={formData.propertyUse === option}
-                      onChange={handleChange}
-                    />
-                    {option}
-                  </label>
-                )
-              )}
-            </div>
-          </div>
+        <div className="mb-4">
+  <label className="block font-semibold text-[#111827] text-[18px] mb-2">
+    How is this property used?
+  </label>
+  <div className="flex gap-4 xs:flex-wrap xs:flex-col text-[#111827] flex-wrap">
+    {["I own it", "I live with my parents", "I rent", "Other"].map((option) => (
+      <label
+        key={option}
+        className={`flex items-center gap-2 ${
+          formData.propertyUse === option ? "font-semibold" : "font-normal"
+        }`}
+      >
+        <input
+          type="checkbox"
+          name="propertyUse"
+          value={option}
+          className="accent-blue-600 w-[15px] h-[15px]"
+          checked={formData.propertyUse === option}
+          onChange={handleChange}
+        />
+        {option}
+      </label>
+    ))}
+  </div>
+</div>
+
 
           <div className="mb-4 mt-4 flex flex-col">
             <label
@@ -330,21 +334,7 @@ const BorrowerDetails: React.FC<BorrowerDetailsProps> = ({
             <span className="grid xs:grid-cols-1 grid-cols-2 gap-4 mb-4">
               {/* Month Dropdown */}
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                    />
-                  </svg>
-                </span>
+             
                 <select
                   name="moveInMonth"
                   className="w-full border rounded-full text-black  border-gray-300 px-4 py-2 appearance-none"
@@ -374,21 +364,7 @@ const BorrowerDetails: React.FC<BorrowerDetailsProps> = ({
 
               {/* Year Dropdown */}
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                    />
-                  </svg>
-                </span>
+               
                 <select
                   name="moveInYear"
                   className="w-full border rounded-full text-black  border-gray-300 px-4 py-2 appearance-none"
