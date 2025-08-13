@@ -1,7 +1,11 @@
 "use client";
 
-import React, { useState, ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useState, ReactNode, useEffect } from "react";
 import { FiUser, FiChevronDown, FiEdit2, FiGift } from "react-icons/fi";
+import { IoMdArrowRoundBack } from "react-icons/io";
+const totalSteps = 7;
 
 // Edit Button Component
 const EditButton = () => (
@@ -47,12 +51,51 @@ const AccordionSection: React.FC<AccordionSectionProps> = ({ number, title, chil
 // --- Main Page Component ---
 
 const AddReferralPage = () => {
+    const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+  const stepMatch = pathname.match(/step(\d+)/);
+  const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
-    <div className="bg-gray-50 min-h-screen w-full flex justify-center py-10">
-      <div className="max-w-2xl w-full bg-white rounded-xl shadow-sm p-6 sm:p-8 space-y-6">
+    <div className="bg-gray-50 min-h-screen w-full flex-col flex justify-center py-10">
+        <div className="flex justify-between">
+        <span className="flex gap-2 ">
+          <span className="flex justify-center gap-2 items-center">
+            <Link href="/dashboard/application/step7">
+              <IoMdArrowRoundBack />
+            </Link>
+            Borrowers
+          </span>
+        </span>
+
+        {isClient && (
+          <span className="flex items-center gap-2">
+            {/* Dots */}
+            <div className="flex gap-1">
+              {Array.from({ length: totalSteps }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1.5 w-5 rounded-full ${
+                    index < currentStep ? "bg-[#013E8C]" : "bg-gray-200"
+                  }`}
+                ></div>
+              ))}
+            </div>
+
+            {/* Text */}
+            <h1 className="text-sm font-medium">
+              {currentStep} of {totalSteps}
+            </h1>
+          </span>
+        )}
+      </div>
+            <div className="min-w-full flex justify-center">
+ <div className="max-w-2xl w-full bg-white rounded-xl shadow-sm p-6 sm:p-8 space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Add Referral</h1>
+          <h1 className="text-2xl  text-black  font-semibold ">Add Referral</h1>
           <div className="w-20 h-1 bg-blue-700 mt-2 rounded"></div>
         </div>
 
@@ -76,9 +119,9 @@ const AddReferralPage = () => {
                     <FiUser className="text-blue-800" size={18} />
                   </span>
                   <div>
-                    <p className="font-bold text-gray-900">Jane Cooper</p>
-                    <p className="text-sm text-gray-500">Cell Number : <span className="font-medium text-gray-700">(123) 489-7895</span></p>
-                    <p className="text-sm text-gray-500">Home Number : <span className="font-medium text-gray-700">(909) 978-7458</span></p>
+                    <p className=" text-black  font-semibold ">Jane Cooper</p>
+                    <p className="text-sm text-gray-500">Cell Number : <span className="font-mediumtext-black">(123) 489-7895</span></p>
+                    <p className="text-sm text-gray-500">Home Number : <span className="  text-black  font-semibold ">(909) 978-7458</span></p>
                   </div>
                 </div>
                 <EditButton />
@@ -90,10 +133,10 @@ const AddReferralPage = () => {
                     <FiUser className="text-blue-800" size={18} />
                   </span>
                   <div>
-                    <p className="font-bold text-gray-900">Darlene Robertson</p>
-                    <p className="text-sm text-gray-500">Cell Number : <span className="font-medium text-gray-700">(123) 489-7895</span></p>
-                    <p className="text-sm text-gray-500">Home Number : <span className="font-medium text-gray-700">(909) 978-7458</span></p>
-                    <p className="text-sm text-gray-500">Email : <span className="font-medium text-gray-700">darlenerobertson@gmail.com</span></p>
+                    <p className="  text-black  font-semibold ">Darlene Robertson</p>
+                    <p className="text-sm text-gray-500">Cell Number : <span className=" text-black  font-semibold ">(123) 489-7895</span></p>
+                    <p className="text-sm text-gray-500">Home Number : <span className=" text-black  font-semibold ">(909) 978-7458</span></p>
+                    <p className="text-sm text-gray-500">Email : <span className=" text-black  font-semibold ">darlenerobertson@gmail.com</span></p>
                   </div>
                 </div>
                 <EditButton />
@@ -109,8 +152,8 @@ const AddReferralPage = () => {
                     <FiUser className="text-blue-800" size={18} />
                   </span>
                   <div>
-                    <p className="font-bold text-gray-900">Jane Cooper</p>
-                    <p className="font-medium text-gray-700">Apple Inc</p>
+                    <p className="  text-black  font-semibold ">Jane Cooper</p>
+                    <p className="  text-black  font-semibold ">Apple Inc</p>
                     <p className="text-sm text-gray-500">UI & UX Designer</p>
                     <p className="text-sm text-gray-500 mt-2">Annual Income</p>
                   </div>
@@ -133,7 +176,7 @@ const AddReferralPage = () => {
                      <span className="bg-blue-100 p-2.5 rounded-full flex items-center justify-center">
                       <FiUser className="text-blue-800" size={18} />
                     </span>
-                    <p className="font-bold text-gray-900">Jane Cooper</p>
+                    <p className="  text-black  font-semibold ">Jane Cooper</p>
                   </div>
                   <EditButton />
                 </div>
@@ -171,7 +214,7 @@ const AddReferralPage = () => {
                      <span className="bg-blue-100 p-2.5 rounded-full flex items-center justify-center">
                       <FiUser className="text-blue-800" size={18} />
                     </span>
-                    <p className="font-bold text-gray-900">Jane Cooper</p>
+                    <p className="  text-black  font-semibold ">Jane Cooper</p>
                   </div>
                   <EditButton />
                 </div>
@@ -192,49 +235,70 @@ const AddReferralPage = () => {
           </AccordionSection>
 
           {/* 6. Properties */}
-          <AccordionSection number={6} title="Properties">
+          <AccordionSection number={6} title="">
              <div className="flex justify-between items-start">
                 <div className="flex items-start gap-3">
                   <span className="bg-blue-100 p-2.5 rounded-full flex items-center justify-center">
                     <FiUser className="text-blue-800" size={18} />
                   </span>
                   <div>
-                    <p className="font-bold text-gray-900">Jane Cooper</p>
-                    <p className="text-sm text-gray-600 mt-1 max-w-md">Sansin - 111 Mcnab Street, Strathroy, Ontario N7G4J6</p>
+                    <p className="  text-black  font-semibold ">Jane Cooper</p>
+                    <p className=""></p>
                   </div>
                 </div>
                 <EditButton />
               </div>
           </AccordionSection>
 
+<AccordionSection number={6} title="Properties">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-center gap-3">
+                <span className="bg-blue-100 p-2.5 rounded-full flex items-center justify-center">
+                  <FiUser className="text-blue-800" size={18} />
+                </span>
+                <div>
+                  <p className="font-bold text-black">Jane Cooper</p>
+                </div>
+              </div>
+              <EditButton />
+            </div>
+            <div className="space-y-1 font-semiold     text-black  text-sm  mt-1 max-w-md">
+              <p>Sansin - 111 Mcnab Street, Strathroy,</p>
+              <p> Ontario N7G4J6</p>
+            </div>
+          </AccordionSection>
           {/* 7. Referral */}
           <AccordionSection number={7} title="Referral">
             <div className="flex justify-between items-start mb-4">
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 <span className="bg-blue-100 p-2.5 rounded-full flex items-center justify-center">
                   <FiUser className="text-blue-800" size={18} />
                 </span>
                 <div>
                   <p className="font-bold text-gray-900">Jane Cooper</p>
-                  <p className="font-medium text-gray-700">Realtor</p>
                 </div>
               </div>
               <EditButton />
             </div>
-            <div className="space-y-3">
-              <input type="text" placeholder="Company Name" className="w-full border rounded-md px-3 py-2 bg-gray-50 border-gray-200 focus:ring-blue-500 focus:border-blue-500"/>
-              <input type="email" placeholder="Email" className="w-full border rounded-md px-3 py-2 bg-gray-50 border-gray-200 focus:ring-blue-500 focus:border-blue-500" />
+              <p className ="text-black  font-semibold ">Realtor</p>
+            <div className="space-y-1">
+              <input type="text" placeholder="Company Name" className="w-full  rounded-md    focus:ring-blue-500 focus:border-blue-500"/>
+              <input type="email" placeholder="Email" className="w-full rounded-md  focus:ring-blue-500 focus:border-blue-500" />
             </div>
           </AccordionSection>
         </div>
 
         {/* Footer Button */}
         <div className="pt-4">
-          <button className="w-full bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
+          <Link href="/dashboard/application">
+          <button className="w-full bg-[#013E8C] text-white font-semibold py-3 px-4 rounded-full hover:bg-[#013E8C] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
             Go to dashboard
           </button>
+          </Link>
         </div>
       </div>
+</div>
+     
     </div>
   );
 };

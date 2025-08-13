@@ -88,7 +88,7 @@ const Page = () => {
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
           </h1>
-          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg text-center mx-auto">
+          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg font-normal text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."
               : "Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders."}
@@ -254,7 +254,7 @@ const Page = () => {
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
           </h1>
-          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg text-center mx-auto">
+          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] font-normal lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."
               : "Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders."}
