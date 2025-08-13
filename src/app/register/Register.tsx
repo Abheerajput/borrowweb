@@ -83,12 +83,12 @@ const Page = () => {
       {activeTab === "register" ? (
         <div className=" px-[4%]">
          
-        <h1 className="xs:text-[15px] text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
+        <h1 className="xs:text-[15px] text-black text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}
           </h1>
-          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg font-normal text-center mx-auto">
+          <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-black max-w-lg font-normal text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."
               : "Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders."}
@@ -249,7 +249,7 @@ const Page = () => {
         </div>
       ) : (
         <div className="min-w-full  px-[4%]">
-           <h1 className="xs:text-[15px] text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
+           <h1 className="xs:text-[15px] text-center text-black sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
             {Borrower
               ? "Welcome to Borrow Direct"
               : "Welcome to Borrow Direct – Lender Portal"}

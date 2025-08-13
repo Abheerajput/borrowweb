@@ -73,3 +73,20 @@ body {
     animation-play-state: paused;
   }
 }
+select {
+  /* Other styles... */
+  appearance: auto; /* or maybe it's not even here, and it's another rule */
+}
+
+input,
+textarea,
+select {
+  /* ... */
+  appearance: auto; /* THIS IS THE CULPRIT */
+}
+
+select, input, textarea, select {
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: none !important;
+}
