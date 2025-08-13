@@ -36,7 +36,7 @@ const page = () => {
       {/* header  */}
       <div className="flex justify-between items-center ">
         <div className="flex flex-col">
-          <span className="text-[20px] font-light ">
+          <span className="text-[20px] text-black font-light ">
             Welcome To Borrow Direct
           </span>
           <span className="text-black   text-[27px] font-medium">

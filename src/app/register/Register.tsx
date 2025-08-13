@@ -63,7 +63,7 @@ const Page = () => {
   };
 
   return (
-    <div className=" py-10 min-w-full px-[4%] min-h-screen flex flex-col items-center">
+    <div className=" py-10 min-w-full px-[4%] bg-white min-h-screen flex flex-col items-center">
       {/* Tabs */}
       <div className="bg-[#F1F1F1] py-[6px] px-2 w-[80%] max-w-xl flex items-center justify-between rounded-full mb-2 shadow-sm">
         <div

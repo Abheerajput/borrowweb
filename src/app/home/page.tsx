@@ -50,7 +50,7 @@ const Page = () => {
                 Get Started
               </p>
             </div>
-            <p className="text-[#595959  py-2 w-[600px] xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px]  font-medium text-center max-w-md">
+            <p className="text-[#595959]  py-2 w-[600px] xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px]  font-medium text-center max-w-md">
               Identify yourself as a Borrower, Lender, Lawyer, or Referral
               Partner to streamline your journey and access tailored features.
             </p>
