@@ -1,5 +1,3 @@
-// src/app/dashboard/application/step4/OtherIncomeForm.tsx
-
 import React from "react";
 import { IFormData } from "../step4/page"; // Adjust path if necessary
 import { FaDollarSign } from "react-icons/fa";
@@ -10,12 +8,10 @@ interface OtherIncomeFormProps {
 }
 
 const OtherIncomeForm: React.FC<OtherIncomeFormProps> = ({ data, onDataChange }) => {
-  // Generic handler for standard inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onDataChange({ [e.target.name]: e.target.value });
   };
-  
-  // Custom handler for radio buttons
+
   const handleFieldChange = (fieldName: keyof IFormData, value: any) => {
     onDataChange({ [fieldName]: value });
   };
@@ -26,7 +22,7 @@ const OtherIncomeForm: React.FC<OtherIncomeFormProps> = ({ data, onDataChange })
     "Survivor Benefit Pension",
     "Other",
   ] as const;
-  
+
   return (
     <>
       <h3 className="text-lg font-semibold text-gray-900 mt-6">Other Income</h3>
@@ -37,19 +33,19 @@ const OtherIncomeForm: React.FC<OtherIncomeFormProps> = ({ data, onDataChange })
         <label className="block font-semibold text-[#111827] text-lg mb-3">
           What type of income do you have?*
         </label>
-        <div className="space-y-2">
+        <div className="flex flex-wrap gap-3">
           {incomeOptions.map((option) => (
-            <label key={option} className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="otherIncomeType"
-                value={option}
-                checked={data.otherIncomeType === option}
-                onChange={() => handleFieldChange("otherIncomeType", option)}
-                className="accent-blue-600 w-5 h-5"
-              />
-              <span className="text-base text-gray-800">{option}</span>
-            </label>
+            <div
+              key={option}
+              onClick={() => handleFieldChange("otherIncomeType", option)}
+              className={`cursor-pointer px-4 py-2 rounded-full border transition-all ${
+                data.otherIncomeType === option
+                  ? "bg-blue-100 border-blue-600 font-semibold"
+                  : "border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              {option}
+            </div>
           ))}
         </div>
       </div>
@@ -79,17 +75,17 @@ const OtherIncomeForm: React.FC<OtherIncomeFormProps> = ({ data, onDataChange })
           What’s your annual income from this source?*
         </label>
         <div className="relative mt-1">
-            <FaDollarSign className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" />
-            <input
-              id="otherAnnualIncome"
-              name="otherAnnualIncome"
-              type="number"
-              value={data.otherAnnualIncome || ''}
-              onChange={handleChange}
-              className="w-full border rounded-full pl-10 pr-4 py-3 border-gray-300"
-              placeholder="e.g. 80,000"
-              required
-            />
+          <FaDollarSign className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" />
+          <input
+            id="otherAnnualIncome"
+            name="otherAnnualIncome"
+            type="number"
+            value={data.otherAnnualIncome || ''}
+            onChange={handleChange}
+            className="w-full border rounded-full pl-10 pr-4 py-3 border-gray-300"
+            placeholder="e.g. 80,000"
+            required
+          />
         </div>
       </div>
 

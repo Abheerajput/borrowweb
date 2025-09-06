@@ -44,15 +44,29 @@ const SelfEmployedForm: React.FC<SelfEmployedFormProps> = ({ data, onDataChange 
         <label className="block mb-1 text-lg font-semibold text-gray-900">
           Is this your current employment?
         </label>
-        <div className="flex gap-6 text-[16px] text-[#111827] font-medium">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" name="isCurrentIncomeSource" checked={data.isCurrentIncomeSource === true} onChange={() => handleFieldChange("isCurrentIncomeSource", true)} className="accent-blue-600 w-[15px] h-[15px]" />
-            Yes
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" name="isCurrentIncomeSource" checked={data.isCurrentIncomeSource === false} onChange={() => handleFieldChange("isCurrentIncomeSource", false)} className="accent-blue-600 w-[15px] h-[15px]" />
-            No
-          </label>
+         <div className="flex gap-6 text-[16px] text-[#111827] font-medium">
+          {["Yes", "No"].map((option) => {
+            const value = option === "Yes";
+            return (
+              <label
+                key={option}
+                className={`flex items-center cursor-pointer px-3 py-1 rounded-full border ${
+                  data.isCurrentIncomeSource === value
+                    ? "bg-blue-100 border-blue-600"
+                    : "border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="isCurrentIncomeSource"
+                  checked={data.isCurrentIncomeSource === value}
+                  onChange={() => handleFieldChange("isCurrentIncomeSource", value)}
+                 
+                />
+                {option}
+              </label>
+            );
+          })}
         </div>
       </div>
 
@@ -83,18 +97,19 @@ const SelfEmployedForm: React.FC<SelfEmployedFormProps> = ({ data, onDataChange 
       
       <div className="mt-6">
         <label className="block font-semibold text-[#111827] text-[18px] mb-2">What type of business is it?</label>
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           {(["Corporation", "Sole Proprietor", "Partnership"] as const).map((type) => (
-            <label key={type} className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox" // Use radio for single selection
-                name="businessStructure"
-                checked={data.businessStructure === type}
-                onChange={() => handleFieldChange("businessStructure", type)}
-                className="accent-blue-600 w-[15px] h-[15px]"
-              />
+            <div
+              key={type}
+              onClick={() => handleFieldChange("businessStructure", type)}
+              className={`px-4 py-2 cursor-pointer rounded-full border transition-all ${
+                data.businessStructure === type
+                  ? "bg-blue-100 border-blue-600 font-semibold"
+                  : "border-gray-300 hover:border-gray-500"
+              }`}
+            >
               {type}
-            </label>
+            </div>
           ))}
         </div>
       </div>
@@ -113,19 +128,21 @@ const SelfEmployedForm: React.FC<SelfEmployedFormProps> = ({ data, onDataChange 
         <label className="flex flex-col font-semibold text-[#111827] text-[18px] mb-2">
            How do you pay yourself?
         </label>
-        <div className="flex flex-wrap gap-4 w-full mt-2">
-            {paymentOptions.map((option) => (
-                <div
-                  key={option.name}
-                  onClick={() => handleFieldChange("paymentMethod", option.name)}
-                  className={`min-w-[160px] flex-1 border rounded-xl flex flex-col h-[90px] justify-center items-center cursor-pointer transition-all ${
-                      data.paymentMethod === option.name ? "border-blue-600 border-2" : "border-gray-300 hover:border-gray-500"
-                  }`}
-                >
-                    <Image src={option.icon} alt={option.name} className="object-contain w-[50px]"/>
-                    <p className="text-sm font-medium mt-1">{option.name}</p>
-                </div>
-            ))}
+         <div className="flex flex-wrap gap-4 w-full mt-2">
+          {paymentOptions.map((option) => (
+            <div
+              key={option.name}
+              onClick={() => handleFieldChange("paymentMethod", option.name)}
+              className={`min-w-[160px] flex-1 border rounded-xl flex flex-col h-[90px] justify-center items-center cursor-pointer transition-all ${
+                data.paymentMethod === option.name
+                  ? "border-blue-600 border-2 bg-blue-50"
+                  : "border-gray-300 hover:border-gray-500"
+              }`}
+            >
+              <Image src={option.icon} alt={option.name} className="object-contain w-[50px]" />
+              <p className="text-sm font-medium mt-1">{option.name}</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -153,6 +170,20 @@ const SelfEmployedForm: React.FC<SelfEmployedFormProps> = ({ data, onDataChange 
 };
 
 export default SelfEmployedForm;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // // src/app/dashboard/application/step4/SelfEmployedForm.tsx
 
 // import React from "react";

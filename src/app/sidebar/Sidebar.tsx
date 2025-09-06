@@ -11,14 +11,29 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
   const [activeItem, setActiveItem] = useState<string>("");
+  const [role, setRole] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+
+  // Get role from localStorage
+  useEffect(() => {
+    const storedRole = localStorage.getItem("userRole");
+    setRole(storedRole);
+  }, []);
+
+  // Dynamic application path based on role
+  const applicationPath =
+    role === "lender"
+      ? "/dashboard/application/lender"
+      : role === "keypartner"
+      ? "/dashboard/application/keypartner"
+      : "/dashboard/application"; // default for borrower
 
   const menuItems = [
     {
       title: "Applications",
       icon: <FaThList />,
-      path: "/dashboard/application",
+      path: applicationPath,
     },
     {
       title: "Notifications",
@@ -28,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
     { title: "Profile", icon: <FaUser />, path: "/dashboard/profile" },
   ];
 
-  // This hook ensures the correct menu item is highlighted when the page loads or URL changes.
+  // Ensure correct menu item is highlighted when URL changes
   useEffect(() => {
     const currentItem = menuItems.find((item) =>
       pathname.startsWith(item.path)
@@ -36,13 +51,13 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
     if (currentItem) {
       setActiveItem(currentItem.title);
     }
-  }, [pathname]);
+  }, [pathname, role]); // also re-run when role updates
 
   const handleNavigation = (title: string, path: string) => {
     setActiveItem(title);
     router.push(path);
     if (closeSidebar) {
-      closeSidebar(); // Close the sidebar on mobile after navigation
+      closeSidebar(); // Close sidebar on mobile
     }
   };
 

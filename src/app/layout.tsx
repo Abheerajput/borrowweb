@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import localFont from "next/font/local";
 import { Poppins } from 'next/font/google';
 import "./globals.css";
-
+import { Toaster } from "react-hot-toast";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -36,6 +36,8 @@ export default function RootLayout({
     <html lang="en">
 <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} font-poppins`}>
         {children}
+              <Toaster position="top-right" reverseOrder={false} />
+
       </body>
     </html>
   );

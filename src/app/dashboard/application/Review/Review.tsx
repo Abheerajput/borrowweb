@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState, FormEvent } from "react";
@@ -7,11 +8,8 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 
 const totalSteps = 7;
 
-// 1. Define a NEW, CORRECT interface for the referral form data
 interface IReferralFormData {
   wasRecommended: boolean;
-  
-  // These fields are optional because they only exist if wasRecommended is true
   referrerFirstName?: string;
   referrerLastName?: string;
   referrerCompany?: string;
@@ -23,8 +21,7 @@ interface IReferralFormData {
 const ReferralDetails = () => {
   const pathname = usePathname();
   const router = useRouter();
-  
-  // 2. Use a state object based on the NEW interface with correct defaults
+
   const [formData, setFormData] = useState<IReferralFormData>({
     wasRecommended: false,
     referrerFirstName: "",
@@ -32,89 +29,220 @@ const ReferralDetails = () => {
     referrerCompany: "",
     referrerEmail: "",
     referrerPhone: "",
-    referralType: "Realtor", // A sensible default
+    referralType: "Realtor",
   });
 
   const [isClient, setIsClient] = useState(false);
   const stepMatch = pathname.match(/step(\d+)/);
   const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // 3. Unified handler for text inputs
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+useEffect(() => {
+  const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+  console.log("Stored referral object:", storedApp.referral[0]);
 
-  // 4. Custom handler for radio buttons
+  if (storedApp?.referral?.length > 0) {
+    const r = storedApp.referral[0];
+    setFormData({
+      wasRecommended: r.refer?.label === "Yes",
+      referrerFirstName: r.firstName || "",
+      referrerLastName: r.lastName || "",
+      referrerCompany: r.companyName || "",
+      referrerEmail: r.email || "",
+      referrerPhone: r.phoneNumber || "",
+      referralType: r.refferalTypeData?.label || "Realtor",
+    });
+    console.log("After setFormData:", r.lastName, r.firstName);
+  }
+}, []);
+
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setFormData(prev => ({ ...prev, [name]: value }));
+};
+
+
   const handleFieldChange = (fieldName: keyof IReferralFormData, value: any) => {
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
       [fieldName]: value,
     }));
   };
-  
-  // 5. Handle form submission with corrected logic
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    let submissionData: Partial<IReferralFormData> = {
-        wasRecommended: formData.wasRecommended,
-    };
+  const applicationId =
+    typeof window !== "undefined"
+      ? localStorage.getItem("applicationId")
+      : null;
 
-    // Only include referrer details if one was provided
-    if (formData.wasRecommended) {
-        submissionData = { ...submissionData, ...formData };
-    }
-    
-    console.log("Submitting Referral Data to API:", submissionData);
+  if (!applicationId) {
+    alert("❌ Application ID not found in localStorage!");
+    return;
+  }
 
-    try {
-        /*
-        const response = await fetch('/api/referrals', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(submissionData),
-        });
+  // Build referral array for MongoDB structure
+  const referralPayload = [
+    {
+      refer: {
+        id: formData.wasRecommended ? 1 : 2,
+        label: formData.wasRecommended ? "Yes" : "No",
+      },
+      firstName: formData.wasRecommended ? formData.referrerFirstName || "" : "",
+      lastName: formData.wasRecommended ? formData.referrerLastName || "" : "",
+      companyName: formData.wasRecommended ? formData.referrerCompany || "" : "",
+      email: formData.wasRecommended ? formData.referrerEmail || "" : "",
+      phoneNumber: formData.wasRecommended ? formData.referrerPhone || "" : "",
+      referEmail: formData.wasRecommended ? formData.referrerEmail || "" : "",
+      refferalTypeData: formData.wasRecommended
+        ? {
+            id:
+              formData.referralType === "Builder"
+                ? 1
+                : formData.referralType === "Realtor"
+                ? 2
+                : formData.referralType === "Client"
+                ? 3
+                : 4,
+            label: formData.referralType || "Other",
+          }
+        : null,
+    },
+  ];
 
-        if (!response.ok) { throw new Error('API submission failed'); }
-        
-        router.push('/dashboard/application/step7'); // Navigate to next step
-        */
-       alert("Referral data logged to console. Check the console for the API payload.");
-
-    } catch (error) {
-        console.error("API Error:", error);
-    }
+  const payload = {
+    applicationId,
+    currentState: currentStep,
+    referral: referralPayload,
   };
 
+  console.log("📦 Final Referral Payload:", payload);
+
+  try {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    const res = await axios.put(
+      "https://bdapi.testenvapp.com/api/v1/user-applications/update",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `${token}` } : {}),
+        },
+      }
+    );
+
+    if (res.status === 200 || res.status === 201) {
+      alert("✅ Referral updated successfully!");
+      console.log("API Response:", res.data);
+
+      // ✅ Update localStorage with latest referral data
+      const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+      const updatedApp = {
+        ...storedApp,
+        referral: referralPayload, // overwrite the referral array
+        currentState: currentStep, // optional: update current step
+        updatedAt: new Date().toISOString(), // optional: track last update
+      };
+      localStorage.setItem("selectedApplication", JSON.stringify(updatedApp));
+
+      router.push(`/dashboard/application/step7`);
+    } else {
+      alert(`Update failed! Status: ${res.status}`);
+      console.error("❌ Error Response:", res.data);
+    }
+  } catch (err) {
+    console.error("❌ Error updating referral:", err);
+    alert("Something went wrong while updating referral!");
+  }
+};
+
+
+  const [open, setOpen] = useState(false);
+     const steps = [
+       { label: "Home", route: "/dashboard/application" },
+       { label: "Basic Details", route: "/dashboard/application/step1" },
+       { label: "Borrowers", route: "/dashboard/application/step2" },
+    { label: "Documents", route: "/dashboard/application/step3" },
+    { label: "Income", route: "/dashboard/application/step4" },
+    { label: "Assets", route: "/dashboard/application/step5" },
+    { label: "Properties", route: "/dashboard/application/step6" },
+    { label: "Referral", route: "/dashboard/application/step7" },
+  ];
+  const [selected, setSelected] = useState(steps[7]);
   return (
     <div className="min-h-screen min-w-full flex flex-col p-4">
-      {/* Header and Progress Bar */}
-
-
-
-      
       <div className="flex justify-between items-center">
-        <Link href="/dashboard/application/step6" className="flex gap-2 items-center text-gray-700 hover:text-black">
-          <IoMdArrowRoundBack className="text-xl" />
-          <span className="font-semibold">Referral Information</span>
-        </Link>
+         <div className="relative inline-block text-left">
+      <div className="flex items-center gap-2">
+        <IoMdArrowRoundBack className="text-black" />
+        <button
+          type="button"
+          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+          onClick={() => setOpen(!open)}
+        >
+          {selected.label}
+          <svg
+            className="-mr-1 ml-2 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {open && (
+        <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+          <div className="py-1">
+            {steps.map((step) => (
+              <Link
+                key={step.route}
+                href={step.route}
+                className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                  selected.route === step.route ? "font-semibold" : ""
+                }`}
+                onClick={() => {
+                  setSelected(step);
+                  setOpen(false);
+                }}
+              >
+                {step.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
 
         {isClient && (
           <span className="flex flex-col-reverse items-end gap-2">
-            <div className="flex  gap-1">
+            <div className="flex gap-1">
               {Array.from({ length: totalSteps }).map((_, index) => (
-                <div key={index} className={`h-1.5 w-5 rounded-full ${index < currentStep ? "bg-[#013E8C]" : "bg-gray-200"}`}></div>
+                <div
+                  key={index}
+                  className={`h-1.5 w-5 rounded-full ${
+                    index < currentStep ? "bg-[#013E8C]" : "bg-gray-200"
+                  }`}
+                ></div>
               ))}
             </div>
-            <h1 className="text-sm text-black font-medium">{currentStep} of {totalSteps}</h1>
+            <h1 className="text-sm text-black font-medium">
+              {currentStep} of {totalSteps}
+            </h1>
           </span>
         )}
       </div>
@@ -122,68 +250,167 @@ const ReferralDetails = () => {
       <div className="bg-white mt-8 shadow-md rounded-xl p-6 w-full max-w-3xl mx-auto">
         <form onSubmit={handleSubmit}>
           <h1 className="font-semibold text-[#111827] text-xl">Add Referral</h1>
-        
+
           <div className="my-6">
             <label className="block mb-2 font-semibold text-[#111827] text-[18px]">
               Did anyone recommend us to you?
             </label>
-            <div className="flex gap-6 text-[#111827]">
+            <div className="flex gap-6 text-[16px] text-[#111827] font-medium">
               {["Yes", "No"].map((option) => (
-                <label key={option} className="flex items-center gap-2 cursor-pointer">
-                  {/* Converted to radio for single selection */}
-                  <input type="radio" name="wasRecommended" checked={formData.wasRecommended === (option === "Yes")} onChange={() => handleFieldChange("wasRecommended", option === "Yes")} className="accent-blue-600 w-4 h-4"/>
+                <label
+                  key={option}
+                  className={`flex items-center gap-2 cursor-pointer px-3 py-1 rounded-full ${
+                    (formData.wasRecommended === true && option === "Yes") ||
+                    (formData.wasRecommended === false && option === "No")
+                      ? "bg-blue-100 border border-blue-600"
+                      : "border border-gray-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.wasRecommended === (option === "Yes")}
+                    onChange={() =>
+                      handleFieldChange("wasRecommended", option === "Yes")
+                    }
+                    className="hidden"
+                  />
                   {option}
                 </label>
               ))}
             </div>
           </div>
 
-          {/* 6. Conditional rendering: This entire block only shows if "Yes" is selected */}
           {formData.wasRecommended && (
-            <div className="space-y-6 
-             rounded-r-lg">
-                <div className="mb-6">
-                    <label htmlFor="referrerFirstName" className="block font-semibold text-[#111827] text-[18px] mb-2">First name</label>
-                    <input id="referrerFirstName" name="referrerFirstName" placeholder="Referrer’s first name" value={formData.referrerFirstName || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required />
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="referrerLastName" className="block font-semibold text-[#111827] text-[18px] mb-2">Last name</label>
-                    <input id="referrerLastName" name="referrerLastName" placeholder="Referrer’s last name" value={formData.referrerLastName || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required />
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="referrerCompany" className="block font-semibold text-[#111827] text-[18px] mb-2">Company name (Optional)</label>
-                    <input id="referrerCompany" name="referrerCompany" placeholder="Referrer’s company name" value={formData.referrerCompany || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" />
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="referrerEmail" className="block font-semibold text-[#111827] text-[18px] mb-2">Email address</label>
-                    <input id="referrerEmail" name="referrerEmail" type="email" placeholder="Referrer’s email" value={formData.referrerEmail || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="referrerPhone" className="block font-semibold text-[#111827] text-[18px] mb-2">Phone number</label>
-                    <input id="referrerPhone" name="referrerPhone" type="tel" placeholder="Referrer's phone number" value={formData.referrerPhone || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
-                </div>
-                <div className="my-6">
-                    <label className="block mb-2 font-semibold text-[#111827] text-[18px]">Referral Type</label>
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-[#111827]">
-                    {(["Builder", "Realtor", "Client", "Other"] as const).map((option) => (
-                        <label key={option} className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="referralType" checked={formData.referralType === option} onChange={() => handleFieldChange("referralType", option)} className="accent-blue-600 w-4 h-4"/>
+            <div className="space-y-6">
+              <div className="mb-6">
+                <label
+                  htmlFor="referrerFirstName"
+                  className="block font-semibold text-[#111827] text-[18px] mb-2"
+                >
+                  First name
+                </label>
+                <input
+                  id="referrerFirstName"
+                  name="referrerFirstName"
+                  placeholder="Referrer’s first name"
+                  value={formData.referrerFirstName || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-full text-black border-gray-300 px-4 py-2"
+                  required
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="referrerLastName"
+                  className="block font-semibold text-[#111827] text-[18px] mb-2"
+                >
+                  Last name
+                </label>
+                <input
+                  id="referrerLastName"
+                   name="referrerLastName" 
+                  placeholder="Referrer’s last name"
+                  value={formData.referrerLastName || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-full text-black border-gray-300 px-4 py-2"
+                  required
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="referrerCompany"
+                  className="block font-semibold text-[#111827] text-[18px] mb-2"
+                >
+                  Company name (Optional)
+                </label>
+                <input
+                  id="referrerCompany"
+                  name="referrerCompany"
+                  placeholder="Referrer’s company name"
+                  value={formData.referrerCompany || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-full text-black border-gray-300 px-4 py-2"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="referrerEmail"
+                  className="block font-semibold text-[#111827] text-[18px] mb-2"
+                >
+                  Email address
+                </label>
+                <input
+                  id="referrerEmail"
+                  name="referrerEmail"
+                  type="email"
+                  placeholder="Referrer’s email"
+                  value={formData.referrerEmail || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-full text-black border-gray-300 px-4 py-2"
+                  required
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="referrerPhone"
+                  className="block font-semibold text-[#111827] text-[18px] mb-2"
+                >
+                  Phone number
+                </label>
+                <input
+                  id="referrerPhone"
+                  name="referrerPhone"
+                  type="tel"
+                  placeholder="Referrer’s phone number"
+                  value={formData.referrerPhone || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-full text-black border-gray-300 px-4 py-2"
+                  required
+                />
+              </div>
+
+              <div className="my-6">
+                <label className="block mb-2 font-semibold text-[#111827] text-[18px]">
+                  Referral Type
+                </label>
+                <div className="flex flex-wrap gap-3 text-[16px] text-[#111827] font-medium">
+                  {(["Builder", "Realtor", "Client", "Other"] as const).map(
+                    (option) => (
+                      <label
+                        key={option}
+                        className={`flex items-center gap-2 cursor-pointer px-3 py-1 rounded-full ${
+                          formData.referralType === option
+                            ? "bg-blue-100 border border-blue-600"
+                            : "border border-gray-300"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.referralType === option}
+                          onChange={() =>
+                            handleFieldChange("referralType", option)
+                          }
+                          className="hidden"
+                        />
                         {option}
-                        </label>
-                    ))}
-                    </div>
+                      </label>
+                    )
+                  )}
                 </div>
+              </div>
             </div>
           )}
 
           <hr className="text-black my-6" />
-          
+
           <div className="flex w-full justify-end mt-6">
-            <Link href="/dashboard/application/submit">
-            <button  className="bg-[#013E8C] min-w-[200px] text-white px-6 py-3 rounded-full hover:bg-[#002e6b] transition-colors">
+            <button className="bg-[#013E8C] min-w-[200px] text-white px-6 py-3 rounded-full hover:bg-[#002e6b] transition-colors">
               Continue
             </button>
-            </Link>
           </div>
         </form>
       </div>
@@ -192,6 +419,269 @@ const ReferralDetails = () => {
 };
 
 export default ReferralDetails;
+
+
+// "use client";
+
+// import axios from "axios";
+// import Link from "next/link";
+// import { usePathname, useRouter } from "next/navigation";
+// import React, { useEffect, useState, FormEvent } from "react";
+// import { IoMdArrowRoundBack } from "react-icons/io";
+
+// const totalSteps = 7;
+
+// // 1. Define a NEW, CORRECT interface for the referral form data
+// interface IReferralFormData {
+//   wasRecommended: boolean;
+  
+//   // These fields are optional because they only exist if wasRecommended is true
+//   referrerFirstName?: string;
+//   referrerLastName?: string;
+//   referrerCompany?: string;
+//   referrerEmail?: string;
+//   referrerPhone?: string;
+//   referralType?: "Builder" | "Realtor" | "Client" | "Other";
+// }
+
+// const ReferralDetails = () => {
+//   const pathname = usePathname();
+//   const router = useRouter();
+  
+//   // 2. Use a state object based on the NEW interface with correct defaults
+//   const [formData, setFormData] = useState<IReferralFormData>({
+//     wasRecommended: false,
+//     referrerFirstName: "",
+//     referrerLastName: "",
+//     referrerCompany: "",
+//     referrerEmail: "",
+//     referrerPhone: "",
+//     referralType: "Realtor", // A sensible default
+//   });
+
+//   const [isClient, setIsClient] = useState(false);
+//   const stepMatch = pathname.match(/step(\d+)/);
+//   const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
+  
+//   useEffect(() => {
+//     setIsClient(true);
+//   }, []);
+
+//   // 3. Unified handler for text inputs
+//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setFormData(prevData => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // 4. Custom handler for radio buttons
+//   const handleFieldChange = (fieldName: keyof IReferralFormData, value: any) => {
+//     setFormData(prevData => ({
+//       ...prevData,
+//       [fieldName]: value,
+//     }));
+//   };
+  
+//  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//   e.preventDefault();
+
+//   const applicationId =
+//     typeof window !== "undefined"
+//       ? localStorage.getItem("applicationId")
+//       : null;
+
+//   if (!applicationId) {
+//     alert("❌ Application ID not found in localStorage!");
+//     return;
+//   }
+
+//   // 🔹 Build referral array according to API contract
+//   const referralPayload = [
+//     {
+//       refer: {
+//         id: formData.wasRecommended ? 1 : 2, // 1 = Yes, 2 = No
+//         label: formData.wasRecommended ? "Yes" : "No",
+//       },
+//       firstName: formData.wasRecommended ? formData.referrerFirstName || "" : "",
+//       lastName: formData.wasRecommended ? formData.referrerLastName || "" : "",
+//       companyName: formData.wasRecommended ? formData.referrerCompany || "" : "",
+//       email: formData.wasRecommended ? formData.referrerEmail || "" : "",
+//       referEmail: formData.wasRecommended ? formData.referrerPhone || "" : "",
+//       refferalTypeData: formData.wasRecommended
+//         ? formData.referralType || null
+//         : null,
+//     },
+//   ];
+
+//   const payload = {
+//     applicationId,
+//     currentState: currentStep,
+//     referral: referralPayload,
+//   };
+
+//   console.log("📦 Final Referral Payload:", payload);
+
+//   try {
+//     const token =
+//       typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+//     const res = await axios.put(
+//       "https://bdapi.testenvapp.com/api/v1/user-applications/update",
+//       payload,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           ...(token ? { Authorization: `${token}` } : {}),
+//         },
+//       }
+//     );
+
+//     if (res.status === 200 || res.status === 201) {
+//       alert("✅ Referral updated successfully!");
+//       console.log("API Response:", res.data);
+
+//       router.push(`/dashboard/application/step7`);
+//     } else {
+//       alert(`Update failed! Status: ${res.status}`);
+//       console.error("❌ Error Response:", res.data);
+//     }
+//   } catch (err) {
+//     console.error("❌ Error updating referral:", err);
+//     alert("Something went wrong while updating referral!");
+//   }
+// };
+
+//   return (
+//     <div className="min-h-screen min-w-full flex flex-col p-4">
+//       {/* Header and Progress Bar */}
+
+
+
+      
+//       <div className="flex justify-between items-center">
+//         <Link href="/dashboard/application/step6" className="flex gap-2 items-center text-gray-700 hover:text-black">
+//           <IoMdArrowRoundBack className="text-xl" />
+//           <span className="font-semibold">Referral Information</span>
+//         </Link>
+
+//         {isClient && (
+//           <span className="flex flex-col-reverse items-end gap-2">
+//             <div className="flex  gap-1">
+//               {Array.from({ length: totalSteps }).map((_, index) => (
+//                 <div key={index} className={`h-1.5 w-5 rounded-full ${index < currentStep ? "bg-[#013E8C]" : "bg-gray-200"}`}></div>
+//               ))}
+//             </div>
+//             <h1 className="text-sm text-black font-medium">{currentStep} of {totalSteps}</h1>
+//           </span>
+//         )}
+//       </div>
+
+//       <div className="bg-white mt-8 shadow-md rounded-xl p-6 w-full max-w-3xl mx-auto">
+//         <form onSubmit={handleSubmit}>
+//           <h1 className="font-semibold text-[#111827] text-xl">Add Referral</h1>
+        
+//           <div className="my-6">
+//             <label className="block mb-2 font-semibold text-[#111827] text-[18px]">
+//               Did anyone recommend us to you?
+//             </label>
+//             <div className="flex gap-6 text-[16px] text-[#111827] font-medium">
+//               {["Yes", "No"].map((option) => (
+//                 <label
+//                   key={option}
+//                   className={`flex items-center gap-2 cursor-pointer px-3 py-1 rounded-full ${
+//                     (formData.wasRecommended === true && option === "Yes") ||
+//                     (formData.wasRecommended === false && option === "No")
+//                       ? "bg-blue-100 border border-blue-600"
+//                       : "border border-gray-300"
+//                   }`}
+//                 >
+//                   <input
+//                     type="checkbox"
+//                     name="planToSell"
+//                     checked={formData.wasRecommended === (option === "Yes")}
+//                     onChange={() =>
+//                       handleFieldChange("wasRecommended", option === "Yes")
+//                     }
+//                     className="hidden" // hide the checkbox, we’ll use label click
+//                   />
+//                   {option}
+//                 </label>
+//               ))}
+//             </div>
+                              
+
+//           </div>
+
+//           {/* 6. Conditional rendering: This entire block only shows if "Yes" is selected */}
+//           {formData.wasRecommended && (
+//             <div className="space-y-6 
+//              rounded-r-lg">
+//                 <div className="mb-6">
+//                     <label htmlFor="referrerFirstName" className="block font-semibold text-[#111827] text-[18px] mb-2">First name</label>
+//                     <input id="referrerFirstName" name="referrerFirstName" placeholder="Referrer’s first name" value={formData.referrerFirstName || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required />
+//                 </div>
+//                 <div className="mb-6">
+//                     <label htmlFor="referrerLastName" className="block font-semibold text-[#111827] text-[18px] mb-2">Last name</label>
+//                     <input id="referrerLastName" name="referrerLastName" placeholder="Referrer’s last name" value={formData.referrerLastName || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required />
+//                 </div>
+//                 <div className="mb-6">
+//                     <label htmlFor="referrerCompany" className="block font-semibold text-[#111827] text-[18px] mb-2">Company name (Optional)</label>
+//                     <input id="referrerCompany" name="referrerCompany" placeholder="Referrer’s company name" value={formData.referrerCompany || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" />
+//                 </div>
+//                 <div className="mb-6">
+//                     <label htmlFor="referrerEmail" className="block font-semibold text-[#111827] text-[18px] mb-2">Email address</label>
+//                     <input id="referrerEmail" name="referrerEmail" type="email" placeholder="Referrer’s email" value={formData.referrerEmail || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
+//                 </div>
+//                 <div className="mb-6">
+//                     <label htmlFor="referrerPhone" className="block font-semibold text-[#111827] text-[18px] mb-2">Phone number</label>
+//                     <input id="referrerPhone" name="referrerPhone" type="tel" placeholder="Referrer's phone number" value={formData.referrerPhone || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
+//                 </div>
+//                 <div className="my-6">
+//                     <label className="block mb-2 font-semibold text-[#111827] text-[18px]">Referral Type</label>
+//                    <div className="flex flex-wrap gap-3 text-[16px] text-[#111827] font-medium">
+//   {(["Builder", "Realtor", "Client", "Other"] as const).map((option) => (
+//     <label
+//       key={option}
+//       className={`flex items-center gap-2 cursor-pointer px-3 py-1 rounded-full ${
+//         formData.referralType === option
+//           ? "bg-blue-100 border border-blue-600"
+//           : "border border-gray-300"
+//       }`}
+//     >
+//       <input
+//         type="checkbox"
+//         name="referralType"
+//         checked={formData.referralType === option}
+//         onChange={() => handleFieldChange("referralType", option)}
+//         className="hidden"
+//       />
+//       {option}
+//     </label>
+//   ))}
+// </div>
+
+//                 </div>
+//             </div>
+//           )}
+
+//           <hr className="text-black my-6" />
+          
+//           <div className="flex w-full justify-end mt-6">
+//             {/* <Link href="/dashboard/application/submit"> */}
+//             <button  className="bg-[#013E8C] min-w-[200px] text-white px-6 py-3 rounded-full hover:bg-[#002e6b] transition-colors">
+//               Continue
+//             </button>
+//             {/* </Link> */}
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ReferralDetails;
 
 
 
@@ -203,16 +693,13 @@ export default ReferralDetails;
 
 
 // "use client";
-
 // import Link from "next/link";
 // import { usePathname } from "next/navigation";
 // import React, { useEffect, useState } from "react";
 // import { IoMdArrowRoundBack } from "react-icons/io";
 // import { PiCompassRoseFill } from "react-icons/pi";
 // const totalSteps = 7;
-
 // const ReferralDetails = () => {
- 
 //   const pathname = usePathname();
 //   const [isClient, setIsClient] = useState(false);
 //   const stepMatch = pathname.match(/step(\d+)/);
