@@ -36,6 +36,7 @@ export interface IFormData {
   industryExperienceMonths?: string;
   employmentStartDate?: string;
   employmentEndDate?: string;
+isCurrentIncomeSource?: boolean;
 
   // Self-Employed
   businessName?: string;

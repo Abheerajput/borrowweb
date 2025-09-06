@@ -155,7 +155,6 @@ const handleLogin = async () => {
 
       // Check if the response status is 200 (OK)
       if (response.status === 201) {
-        localStorage.setItem("userPhone", payload.phone);
         localStorage.setItem("userEmail", payload.email);
         localStorage.setItem("userId", response.data.userId);
         router.push("/verify");
