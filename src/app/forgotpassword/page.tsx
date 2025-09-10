@@ -10,8 +10,8 @@ import google from "../../../public/assets/google.png";
 import fb from "../../../public/assets/fb.png";
 const ForgotPassword = () => {
   return (
-<div className='px-[5%] py-[2%] h-screen'>
-        <div className='flex xs:flex-col w-full gap-6'>
+<div className='px-[5%] py-[2%] bg-white h-screen'>
+        <div className='flex xs:flex-col  w-full gap-6'>
       <div className="w-[40%] py-[1%] xs:hidden  min-h-screen xs:w-full">
 <div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
  <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
