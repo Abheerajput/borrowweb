@@ -5,12 +5,11 @@ import DownPayment from "../ApplicationForm/DownPayment";
 import FoundProperty from "../ApplicationForm/FoundProperty";
 import RealtorDetails from "../ApplicationForm/RealtorDetails";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 const totalSteps = 7;
 import toast from "react-hot-toast";
 export default function ApplicationForm() {
-  const searchParams = useSearchParams();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -33,9 +32,12 @@ const [searchData, setSearchData] = useState<{ isNew: boolean; source: string | 
 
 
 useEffect(() => {
-  const isNew = searchParams?.get("new") === "true";
-  const source = searchParams?.get("source");
-  setSearchData({ isNew, source });
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    const isNew = params.get("new") === "true";
+    const source = params.get("source");
+    setSearchData({ isNew, source });
+  }
 }, []);
 
 
