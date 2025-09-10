@@ -37,7 +37,7 @@ const OtherIncomeForm: React.FC<OtherIncomeFormProps> = ({ data, onDataChange })
           {incomeOptions.map((option) => (
             <div
               key={option}
-              onClick={() => handleFieldChange("otherIncomeType", option)}
+              onClick={() => handleFieldChange("otherIncomeType", option as any)}
               className={`cursor-pointer px-4 py-2 rounded-full border transition-all ${
                 data.otherIncomeType === option
                   ? "bg-blue-100 border-blue-600 font-semibold"

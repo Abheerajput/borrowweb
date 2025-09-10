@@ -47,6 +47,8 @@ export interface IFormData {
   selfEmployedStartDate?: string;
   selfEmployedEndDate?: string;
   netAnnualIncome?: string;
+   otherIncomeType?: string;
+  otherIncomeName?: string;
 
   // Other Income
   incomeTypeData?: { id: number; label: string };
@@ -178,7 +180,7 @@ const IncomePage: React.FC = () => {
         toast.error(`❌ Update failed! Status: ${response.status}`);
       }
     } catch (error) {
-      toast.error("❌ Failed to update income:", error);
+      toast.error("❌ Failed to update income:");
     }
   };
 

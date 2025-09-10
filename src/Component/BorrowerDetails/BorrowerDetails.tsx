@@ -184,7 +184,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       toast.error(`❌ Update failed! Status: ${res.status}`);
     }
   } catch (err) {
-    toast.error("❌ Error updating form:", err);
+    toast.error("❌ Error updating form:");
   }
 };
 
