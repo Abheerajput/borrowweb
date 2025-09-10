@@ -14,14 +14,14 @@ const page = () => {
     <div>
     <div className='flex xs:flex-col w-full gap-6'>            
         
-<div className='backgroundimg xs:min-w-[100%]  w-1/2 min-h-screen  rounded-[30px] bg-cover bg-center flex items-start justify-center relative'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
+<div className='backgroundimg xs:hidden xs:min-w-[100%]  w-1/2 min-h-screen  rounded-[30px] bg-cover bg-center flex items-start justify-center relative'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
 <div className='flex flex-col pt-4 px-[5%] gap-6'>
 
 <div className=''>
     <Image src={logo} alt="" />
 </div>
 <div className='flex flex-col gap-4 '>
-    <h1 className='text-[32px] text-white font-medium'>Join BORROW and Take Control of Your Mortgage Experience</h1>
+    <h1 className='text-[32px] text-white font-medium'>Join BORROW and Take Control of Your Mortgage Experiencedscsdds</h1>
     <p className='text-[18px] text-white font-normal'>Create your account to explore personalized mortgage offers, apply with ease, and stay connected with top lenders.</p>
 </div>
 </div>
@@ -36,7 +36,7 @@ const page = () => {
 </h2>
             <p className='text-[27px] font-semibold text-[#013E8C] cursor-pointer'>Get Started</p>
             </span>
-            <p className='text-[#595959] py-4 font-normal text-center'>Identify yourself as a Borrower, Lender, Lawyer, or Referral Partner to streamline your journey and access tailored features.</p>
+            <p className='text-[#595959] py-4 font-normal  text-center'>Identify yourself as a Borrower, Lender, Lawyer, or Referral Partner to streamline your journey and access tailored features.</p>
 
 <div className=' grid grid-cols-2 xs:grid-cols-1 gap-6'>
     

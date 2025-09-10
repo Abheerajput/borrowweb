@@ -15,7 +15,7 @@ const page = () => {
   return (
     <>
       <div className="px-[5%] py-[2%] flex  xs:flex-col w-full h-screen">
-        <div className="flex xs:flex-col w-1/2  xs:min-w-full gap-6">
+        <div className="flex xs:flex-col w-1/2 xs:hidden  xs:min-w-full gap-6">
           <div
             className="backgroundimg xs:min-w-[100%]  min-w-full min-h-screen  rounded-[30px] bg-cover bg-center flex items-start justify-center relative"
             style={{ backgroundImage: `url(${backgroundimg.src})` }}

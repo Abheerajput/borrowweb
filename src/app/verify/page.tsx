@@ -140,7 +140,7 @@ const VerifyPage = () => {
   return (
     <>
       <div className="flex xs:flex-col flex-row w-full px-[2%]  overflow-y-visible bg-white">
-        <div className="w-[40%] py-[1%] min-h-screen xs:w-full">
+        <div className="w-[40%] py-[1%] xs:hidden min-h-screen xs:w-full">
           <div
             className="backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6"
             style={{ backgroundImage: `url(${backgroundimg.src})` }}

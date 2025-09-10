@@ -12,7 +12,7 @@ const ForgotPassword = () => {
   return (
 <div className='px-[5%] py-[2%] h-screen'>
         <div className='flex xs:flex-col w-full gap-6'>
-      <div className="w-[40%] py-[1%] min-h-screen xs:w-full">
+      <div className="w-[40%] py-[1%] xs:hidden  min-h-screen xs:w-full">
 <div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
  <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
               <div className="">
@@ -33,7 +33,7 @@ const ForgotPassword = () => {
 </div>
 
       
-     <div className='w-[60%] xs:min-w-[100%]  px-[4%] text-center flex flex-col justify-center'>
+     <div className='w-[60%] xs:pt-10 xs:min-w-[100%]  px-[4%] text-center flex flex-col justify-center'>
         <h2 className="text-2xl font-semibold text-[#111827] mb-2">Forgot Your Password</h2>
         <p className="text-gray-600 text-[14px] font-normal px-[8%] text-sm mb-6">
           Enter the OTP sent to your email to Setup New Password of Your Account. This help keep your information secure.

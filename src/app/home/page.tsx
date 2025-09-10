@@ -18,9 +18,9 @@ const Page = () => {
         - flex-col for mobile (default), and lg:flex-row for large screens.
       */}
 <div className="flex xs:flex-col flex-row w-full px-[2%] min-h-screen overflow-y-visible bg-white">
-        <div className="w-[40%] py-[1%] min-h-screen xs:w-full">
-<div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
- <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
+        <div className="w-[40%] py-[1%] xs:hidden xs:max-h-screen xs:w-full">
+<div className='backgroundimg w-full   min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
+ <div className="flex flex-col w-full xs:max-h-[50vh] xs:min-h-[49vh] max-w-lg gap-6 pt-4">
               <div className="">
                               <Image src={logo} alt="Borrow Logo" className="w-auto h-[50px]" />
               </div>
@@ -50,7 +50,7 @@ const Page = () => {
                 Get Started
               </p>
             </div>
-            <p className="text-[#595959]  py-2 w-[600px] xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px]  font-medium text-center max-w-md">
+            <p className="text-[#595959] flex flex-wrap xs:min-w-[100px]  py-2 max-w-[500px] xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px]  font-medium text-center ">
               Identify yourself as a Borrower, Lender, Lawyer, or Referral
               Partner to streamline your journey and access tailored features.
             </p>

@@ -22,9 +22,9 @@ const page = () => {
   return (
     <div className='px-[5%] bg-white  min-h-screen  py-[2%] '>
         <div className='flex xs:flex-col bg-white w-full gap-6'>
-  <div className="w-[40%] py-[1%] min-h-screen  bg-white  xs:w-full">
+  <div className="w-[40%] py-[1%] xs:hidden min-h-screen  bg-white  xs:w-full">
 <div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
- <div className="flex flex-col w-full max-w-lg gap-6 pt-4">
+ <div className="flex flex-col xs:hidden xs:max-h-[50vh] xs:min-h-[49vh] w-full max-w-lg gap-6 pt-4">
               <div className="">
                               <Image src={logo} alt="Borrow Logo" className="w-auto h-[50px]" />
               </div>
