@@ -12,7 +12,6 @@ import toast from "react-hot-toast";
 export default function ApplicationForm() {
   const router = useRouter();
   const pathname = usePathname();
-const searchParams = useSearchParams();
   const [isClient, setIsClient] = useState(false);
   const [selected, setSelected] = useState<string>("");
   const [formData, setFormData] = useState({
@@ -28,6 +27,22 @@ const searchParams = useSearchParams();
   const [hasFoundProperty, setHasFoundProperty] = useState<boolean>(false);
   const [firstTimeBuyer, setFirstTimeBuyer] = useState<null | boolean>(null);
   const [purchasePrice, setPurchasePrice] = useState<string>("");
+const [searchData, setSearchData] = useState<{ isNew: boolean; source: string | null }>({ isNew: false, source: null });
+
+useEffect(() => {
+  const searchParams = useSearchParams();
+  const isNew = searchParams?.get("new") === "true";
+  const source = searchParams?.get("source");
+  setSearchData({ isNew, source });
+}, []);
+
+useEffect(() => {
+  const searchParams = useSearchParams();
+  const isNew = searchParams?.get("new") === "true";
+  const source = searchParams?.get("source");
+  setSearchData({ isNew, source });
+}, []);
+
 
   const [downPayment1, setDownPayment1] = useState("");
   const [downPayment2, setDownPayment2] = useState("");
@@ -57,6 +72,9 @@ const searchParams = useSearchParams();
 
   const stepMatch = pathname.match(/step(\d+)/);
   const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
+  
+
+
 
   // ✅ Prefill data from localStorage if available
   useEffect(() => {
@@ -105,16 +123,16 @@ const searchParams = useSearchParams();
   // ✅ Handle submit
  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-    const isNew = searchParams.get("new") === "true";
-  const source = searchParams.get("source");
+  
   let applicationId: string | null = null;
-  if (!(isNew && source === "dashboard")) {
-    applicationId = localStorage.getItem("applicationId");
-    if (!applicationId) {
-      toast.error("❌ Application ID not found in localStorage!");
-      return;
-    }
+if (!(searchData.isNew && searchData.source === "dashboard")) {
+  applicationId = localStorage.getItem("applicationId");
+  if (!applicationId) {
+    toast.error("❌ Application ID not found in localStorage!");
+    return;
   }
+}
+
  
   const payload: any = {
      ...(applicationId ? { applicationId } : {}),
@@ -182,8 +200,9 @@ const searchParams = useSearchParams();
     const savedApp = localStorage.getItem("selectedApplication");
     let url = "https://bdapi.testenvapp.com/api/v1/user-applications";
     let method: "POST" | "PUT" = "POST";
-const isNew = searchParams.get("new") === "true";
-      const source = searchParams.get("source");
+const searchParams = useSearchParams();
+    const isNew = searchParams?.get("new") === "true";
+      const source = searchParams?.get("source");
 
       if (isNew && source === "dashboard") {
         method = "POST"; // create
