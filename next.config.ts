@@ -19,6 +19,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+   images: {
+    domains: ["borrow-direct-dev-bucket.s3.ap-south-1.amazonaws.com"],
+  },
 
   async rewrites() {
     return [

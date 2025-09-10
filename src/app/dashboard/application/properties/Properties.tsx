@@ -7,6 +7,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { PiCompassRoseFill } from "react-icons/pi";
 import { FaDollarSign } from "react-icons/fa";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const totalSteps = 7;
 
@@ -15,7 +16,7 @@ interface IPropertyFormData {
   propertyValue: string;
   planToSell: boolean;
   hasMortgage: boolean;
-
+  googleAddress?: string; 
   lender?: string;
   currentRate?: string;
   mortgageType?: "Fixed" | "Variable";
@@ -28,9 +29,11 @@ interface IPropertyFormData {
 const PropertiesDetails = () => {
   const pathname = usePathname();
   const router = useRouter();
+const [manualAddress, setManualAddress] = useState(false); // toggle manual input
 
   const [formData, setFormData] = useState<IPropertyFormData>({
     propertyAddress: "",
+    googleAddress: "", // only if manual
     propertyValue: "",
     planToSell: false,
     hasMortgage: false,
@@ -69,6 +72,7 @@ const PropertiesDetails = () => {
     const p = storedApp.properties[0];
     setFormData({
       propertyAddress: p.propertyAddress || "",
+      googleAddress: p.googleAddress || "",
       propertyValue: p.propertyWorth || "",
       planToSell: p.sellingPlan?.label === "Yes",
       hasMortgage: p.mortgageTypeData?.label === "Yes",
@@ -111,6 +115,7 @@ const PropertiesDetails = () => {
   // 🔹 Map formData → required backend format
   const propertyData = {
     propertyAddress: formData.propertyAddress,
+    googleAddress: manualAddress ? formData.propertyAddress : undefined,
     propertyWorth: formData.propertyValue,
     sellingPlan: {
       id: formData.planToSell ? 1 : 2,
@@ -164,7 +169,7 @@ const PropertiesDetails = () => {
     );
 
     if (res.status === 200 || res.status === 201) {
-      alert("✅ Form updated successfully!");
+      toast.success("Form updated successfully!");
       console.log("API Response:", res.data);
 
       // go to next step
@@ -272,24 +277,43 @@ const PropertiesDetails = () => {
             What is the property's address?
           </label>
           <div className="relative mt-2 mb-4">
-            <PiCompassRoseFill className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" />
-            <input
-              id="propertyAddress"
-              name="propertyAddress"
-              type="text"
-              value={formData.propertyAddress}
-              onChange={handleChange}
-              className="w-full border rounded-full pl-11 text-black border-gray-300 px-4 py-2"
-              placeholder="Start typing the address"
-              required
-            />
-          </div>
-          <span className="flex text-sm text-black font-normal justify-between my-4">
-            <p>Can’t find the address?</p>
-            <p className="text-[#013E8C] border-b-2 border-b-[#013E8C] font-semibold cursor-pointer">
-              Type Manually
-            </p>
-          </span>
+  {!manualAddress ? (
+    <>
+      <input
+        id="propertyAddress"
+        name="propertyAddress"
+        type="text"
+        value={formData.propertyAddress}
+        onChange={handleChange}
+        className="w-full border rounded-full pl-11 text-black border-gray-300 px-4 py-2"
+        placeholder="Start typing the address"
+        required
+      />
+      <PiCompassRoseFill className="absolute top-[27%] -translate-y-1/2 left-4 text-gray-400" />
+      <span className="flex text-sm text-black font-normal justify-between my-4">
+        <p>Can’t find the address?</p>
+        <p
+          className="text-[#013E8C] border-b-2 border-b-[#013E8C] font-semibold cursor-pointer"
+          onClick={() => setManualAddress(true)}
+        >
+          Type Manually
+        </p>
+      </span>
+    </>
+  ) : (
+    <input
+      id="googleAddress"
+      name="googleAddress"
+      type="text"
+      value={formData.googleAddress || ""}
+      onChange={(e) => handleFieldChange("googleAddress", e.target.value)}
+      className="w-full border rounded-full pl-4 text-black border-gray-300 px-4 py-2"
+      placeholder="Type the address manually"
+      required
+    />
+  )}
+</div>
+
 
           <hr className="my-6" />
 

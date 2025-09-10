@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState, FormEvent } from "react";
+import toast from "react-hot-toast";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 const totalSteps = 7;
@@ -14,7 +15,7 @@ interface IReferralFormData {
   referrerLastName?: string;
   referrerCompany?: string;
   referrerEmail?: string;
-  referrerPhone?: string;
+  phoneNumber?: string;
   referralType?: "Builder" | "Realtor" | "Client" | "Other";
 }
 
@@ -28,7 +29,7 @@ const ReferralDetails = () => {
     referrerLastName: "",
     referrerCompany: "",
     referrerEmail: "",
-    referrerPhone: "",
+    phoneNumber: "",
     referralType: "Realtor",
   });
 
@@ -52,7 +53,7 @@ useEffect(() => {
       referrerLastName: r.lastName || "",
       referrerCompany: r.companyName || "",
       referrerEmail: r.email || "",
-      referrerPhone: r.phoneNumber || "",
+      phoneNumber: r.phoneNumber || "",
       referralType: r.refferalTypeData?.label || "Realtor",
     });
     console.log("After setFormData:", r.lastName, r.firstName);
@@ -83,7 +84,7 @@ useEffect(() => {
       : null;
 
   if (!applicationId) {
-    alert("❌ Application ID not found in localStorage!");
+    toast.error("❌ Application ID not found in localStorage!");
     return;
   }
 
@@ -98,7 +99,7 @@ useEffect(() => {
       lastName: formData.wasRecommended ? formData.referrerLastName || "" : "",
       companyName: formData.wasRecommended ? formData.referrerCompany || "" : "",
       email: formData.wasRecommended ? formData.referrerEmail || "" : "",
-      phoneNumber: formData.wasRecommended ? formData.referrerPhone || "" : "",
+      phoneNumber: formData.wasRecommended ? formData.phoneNumber || "" : "",
       referEmail: formData.wasRecommended ? formData.referrerEmail || "" : "",
       refferalTypeData: formData.wasRecommended
         ? {
@@ -140,7 +141,7 @@ useEffect(() => {
     );
 
     if (res.status === 200 || res.status === 201) {
-      alert("✅ Referral updated successfully!");
+      toast.success("Referral updated successfully!");
       console.log("API Response:", res.data);
 
       // ✅ Update localStorage with latest referral data
@@ -356,17 +357,17 @@ useEffect(() => {
 
               <div className="mb-6">
                 <label
-                  htmlFor="referrerPhone"
+                  htmlFor="phoneNumber"
                   className="block font-semibold text-[#111827] text-[18px] mb-2"
                 >
                   Phone number
                 </label>
                 <input
-                  id="referrerPhone"
-                  name="referrerPhone"
+                  id="phoneNumber"
+                  name="phoneNumber"
                   type="tel"
                   placeholder="Referrer’s phone number"
-                  value={formData.referrerPhone || ""}
+                  value={formData.phoneNumber || ""}
                   onChange={handleChange}
                   className="w-full border rounded-full text-black border-gray-300 px-4 py-2"
                   required
@@ -440,7 +441,7 @@ export default ReferralDetails;
 //   referrerLastName?: string;
 //   referrerCompany?: string;
 //   referrerEmail?: string;
-//   referrerPhone?: string;
+//   phoneNumber?: string;
 //   referralType?: "Builder" | "Realtor" | "Client" | "Other";
 // }
 
@@ -455,7 +456,7 @@ export default ReferralDetails;
 //     referrerLastName: "",
 //     referrerCompany: "",
 //     referrerEmail: "",
-//     referrerPhone: "",
+//     phoneNumber: "",
 //     referralType: "Realtor", // A sensible default
 //   });
 
@@ -508,7 +509,7 @@ export default ReferralDetails;
 //       lastName: formData.wasRecommended ? formData.referrerLastName || "" : "",
 //       companyName: formData.wasRecommended ? formData.referrerCompany || "" : "",
 //       email: formData.wasRecommended ? formData.referrerEmail || "" : "",
-//       referEmail: formData.wasRecommended ? formData.referrerPhone || "" : "",
+//       referEmail: formData.wasRecommended ? formData.phoneNumber || "" : "",
 //       refferalTypeData: formData.wasRecommended
 //         ? formData.referralType || null
 //         : null,
@@ -635,8 +636,8 @@ export default ReferralDetails;
 //                     <input id="referrerEmail" name="referrerEmail" type="email" placeholder="Referrer’s email" value={formData.referrerEmail || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
 //                 </div>
 //                 <div className="mb-6">
-//                     <label htmlFor="referrerPhone" className="block font-semibold text-[#111827] text-[18px] mb-2">Phone number</label>
-//                     <input id="referrerPhone" name="referrerPhone" type="tel" placeholder="Referrer's phone number" value={formData.referrerPhone || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
+//                     <label htmlFor="phoneNumber" className="block font-semibold text-[#111827] text-[18px] mb-2">Phone number</label>
+//                     <input id="phoneNumber" name="phoneNumber" type="tel" placeholder="Referrer's phone number" value={formData.referrerPhone || ''} onChange={handleChange} className="w-full border rounded-full text-black border-gray-300 px-4 py-2" required/>
 //                 </div>
 //                 <div className="my-6">
 //                     <label className="block mb-2 font-semibold text-[#111827] text-[18px]">Referral Type</label>

@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
       ? "/dashboard/application/keypartner"
       : "/dashboard/application"; // default for borrower
 
+  // Menu Items
   const menuItems = [
     {
       title: "Applications",
@@ -39,14 +40,20 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
       title: "Notifications",
       icon: <FaBell />,
       path: "/dashboard/notifications",
+      hidden: role === "keypartner", // hide for keypartner
     },
-    { title: "Profile", icon: <FaUser />, path: "/dashboard/profile" },
+    {
+      title: "Profile",
+      icon: <FaUser />,
+      path: "/dashboard/profile",
+      hidden: role === "keypartner", // hide for keypartner
+    },
   ];
 
   // Ensure correct menu item is highlighted when URL changes
   useEffect(() => {
-    const currentItem = menuItems.find((item) =>
-      pathname.startsWith(item.path)
+    const currentItem = menuItems.find(
+      (item) => !item.hidden && pathname.startsWith(item.path)
     );
     if (currentItem) {
       setActiveItem(currentItem.title);
@@ -62,17 +69,16 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
   };
 
   return (
-    <div className="min-w-full min-h-screen  h-full p-4 rounded-xl  bg-white flex flex-col">
+    <div className="min-w-full min-h-screen h-full p-4 rounded-xl bg-white flex flex-col">
       {/* Header section with Logo and mobile-only close button */}
       <div className="flex justify-between items-center mb-10">
         <div className="flex-grow flex justify-center items-center">
           <Image src={logo} alt="Borrow Logo" className="w-[70%]" />
         </div>
 
-        {/* The close button is ONLY visible on small screens (the inverse of sm) */}
         <button
           onClick={closeSidebar}
-          className="text-gray-600 mt-[-50px] text-2xl md:hidden lg:hidden xl:hidden sm:hidden"
+          className="text-gray-600 mt-[-50px] text-2xl xs:block hidden"
         >
           <FaTimes />
         </button>
@@ -80,26 +86,31 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
 
       {/* Navigation Links */}
       <ul className="space-y-3">
-        {menuItems.map(({ title, icon, path }) => (
-          <li
-            key={title}
-            onClick={() => handleNavigation(title, path)}
-            className={`cursor-pointer px-4 py-3 rounded-lg flex items-center gap-3 transition-colors duration-200 ${
-              activeItem === title
-                ? "bg-[#013E8C] text-white shadow-md"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            <span className="text-lg w-6 text-center">{icon}</span>
-            <span className="font-medium">{title}</span>
-          </li>
-        ))}
+        {menuItems
+          .filter((item) => !item.hidden) // hide for keypartner
+          .map(({ title, icon, path }) => (
+            <li
+              key={title}
+              onClick={() => handleNavigation(title, path)}
+              className={`cursor-pointer px-4 py-3 rounded-lg flex items-center gap-3 transition-colors duration-200 ${
+                activeItem === title
+                  ? "bg-[#013E8C] text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <span className="text-lg w-6 text-center">{icon}</span>
+              <span className="font-medium">{title}</span>
+            </li>
+          ))}
       </ul>
     </div>
   );
 };
 
 export default Sidebar;
+
+
+
 // "use client";
 // import React, { useState, useEffect } from "react";
 // import { usePathname, useRouter } from "next/navigation";

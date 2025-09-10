@@ -35,6 +35,8 @@ const Page = () => {
   console.log(BASE_URL, "BASE_URLBASE_URL===================");
   const keypartner = type?.toLowerCase() === "keypartner";
   const Borrower = type === "borrower";
+  const Lender = type === "lender";
+  const Keypartner = type === "keypartner";
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -75,13 +77,34 @@ const handleLogin = async () => {
       const user = response.data.data;
 
       // Get role from URL
-      const urlRole = type?.toLowerCase(); // "lender", "borrower", "keypartner"
+      let urlRole = type?.toLowerCase();
+
+if (urlRole === "borrower") {
+  urlRole = "borrow";
+}
+if (urlRole === "Lender") {
+  urlRole = "lender";
+}
+if (urlRole === "Keypartner") {
+  urlRole = "Keypartner";
+}
+ // "lender", "borrower", "keypartner"
 
       // Compare roles
       if (urlRole && user.role.toLowerCase() !== urlRole) {
         toast.error("You are not authorized for this role");
         return; // Stop here, don't store anything
       }
+for (const key in user) {
+  if (user.hasOwnProperty(key)) {
+    const value = user[key];
+    if (typeof value === "string") {
+      localStorage.setItem(key, value); // store raw string
+    } else {
+      localStorage.setItem(key, JSON.stringify(value)); // store objects/arrays
+    }
+  }
+}
 
       // ✅ Save data if authorized
       localStorage.setItem("token", user.token);
@@ -94,7 +117,7 @@ const handleLogin = async () => {
       // Redirect based on role
       if (user.role === "lender") {
         router.push("/dashboard/application/lender");
-      } else if (user.role === "borrower") {
+      } else if (user.role === "borrow") {
         router.push("/dashboard/application");
       } else if (user.role === "keypartner") {
         router.push("/dashboard/application/keypartner");
@@ -114,69 +137,79 @@ const handleLogin = async () => {
 
 
   const handleRegister = async () => {
-    setError(""); // Clear previous errors
-    setLoading(true);
+  setError(""); 
+  setLoading(true);
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      setLoading(false);
-      return;
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    setLoading(false);
+    return;
+  }
+
+  // Determine role from URL param
+  let role = "borrow";
+  if (type === "lender") role = "lender";
+  else if (type === "keypartner") role = "keypartner";
+
+  const cleanPhone = phone.replace(/\D/g, "");
+  const apiUrl =
+    role === "keypartner"
+      ? "https://bdapi.testenvapp.com/api/v1/other_key_partner"
+      : "https://bdapi.testenvapp.com/api/v1/user";
+
+  try {
+    let response;
+
+    if (role === "keypartner") {
+      // ✅ Use FormData for keypartner
+      const formData = new FormData();
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("email", email);
+      formData.append("phone", cleanPhone ? cleanPhone : "");
+      formData.append("password", password);
+      formData.append("role", role);
+      formData.append("address", address || "");
+      if (file) formData.append("verifyId", file);
+
+      response = await axios.post(apiUrl, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      // ✅ Send JSON for borrower/lender
+      const payload = {
+        firstName,
+        lastName,
+        email,
+        phone: cleanPhone ? parseInt(cleanPhone, 10) : undefined,
+        password,
+        role,
+      };
+      response = await axios.post(apiUrl, payload);
     }
 
-    // Determine the role based on the URL parameter
-    let role = "borrow"; // Default role
-    if (type === "lender") {
-      role = "lender";
-    } else if (type === "keypartner") {
-      role = "keypartner";
-    }
-    const cleanPhone = phone.replace(/\D/g, "");
-    const payload = {
-      firstName,
-      lastName,
-      email,
-      phone: cleanPhone ? parseInt(cleanPhone, 10) : undefined,
-      // phone: parseInt(phone.replace(/\D/g, ""), 10), // Remove non-digits and convert to number
-      password,
-      role,
-      ...(keypartner && {
-        address,
-        verifyId: file ? file.name : undefined,
-      }),
-    };
+    console.log("Registration successful:", response.data);
 
-    try {
-      const response = await axios.post(
-        "https://bdapi.testenvapp.com/api/v1/user",
-        payload
-      );
-      console.log("Registration successful:", response.data);
-      console.log(response, "response=============");
-
-      // Check if the response status is 200 (OK)
-      if (response.status === 201) {
-        localStorage.setItem("userEmail", payload.email);
-        localStorage.setItem("userId", response.data.userId);
-        router.push("/verify");
-      } else {
-        // Handle cases where the status is not 200 but no error was thrown by axios
-        // This might happen if the server returns a non-2xx status without an error,
-        // though axios usually throws for 4xx/5xx statuses.
-        setError(
-          response.data?.message ||
-            "Registration failed with an unexpected status."
-        );
-      }
-    } catch (err: any) {
-      console.error("Registration error:", err);
-
+    if (response.status === 201) {
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userId", response.data.userId);
+      router.push("/verify");
+    } else {
       setError(
-        err.response?.data?.message || "Registration failed. Please try again."
+        response.data?.message ||
+          "Registration failed with an unexpected status."
       );
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err: any) {
+    console.error("Registration error:", err);
+    setError(
+      err.response?.data?.message || "Registration failed. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className=" py-10 min-w-full px-[4%] bg-white min-h-screen flex flex-col items-center">
@@ -198,11 +231,16 @@ const handleLogin = async () => {
 
       {activeTab === "register" ? (
         <div className=" px-[4%]">
-          <h1 className="xs:text-[15px] text-black text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
-            {Borrower
-              ? "Welcome to Borrow Direct"
-              : "Welcome to Borrow Direct – Lender Portal"}
-          </h1>
+         <h1 className="xs:text-[15px] text-black text-center sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
+  {Borrower
+    ? "Welcome to Borrow Direct"
+    : Lender
+      ? "Welcome to Borrow Direct – Lender Portal"
+      : Keypartner
+        ? "Welcome to Borrow Direct – Keypartner Portal"
+        : "Welcome to Borrow Direct"}
+</h1>
+
           <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] pb-3 text-black max-w-lg font-normal text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."
@@ -392,10 +430,15 @@ const handleLogin = async () => {
       ) : (
         <div className="min-w-full  px-[4%]">
           <h1 className="xs:text-[15px] text-center text-black sm:text-[18px] pt-3 md:text-[24px] lg:text-[28px] xl:text-[32px] font-semibold mb-2">
-            {Borrower
-              ? "Welcome to Borrow Direct"
-              : "Welcome to Borrow Direct – Lender Portal"}
-          </h1>
+  {Borrower
+    ? "Welcome to Borrow Direct"
+    : Lender
+      ? "Welcome to Borrow Direct – Lender Portal"
+      : Keypartner
+        ? "Welcome to Borrow Direct – Keypartner Portal"
+        : "Welcome to Borrow Direct"}
+</h1>
+
           <p className="xs:text-[12px] sm:text-[14px] md:text-[15px] font-normal lg:text-[16px] xl:text-[18px] pb-3 text-gray-600 max-w-lg text-center mx-auto">
             {Borrower
               ? "Log in to manage your mortgage applications, connect with lenders, and track your progress every step of the way."

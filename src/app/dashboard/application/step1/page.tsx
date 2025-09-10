@@ -5,15 +5,14 @@ import DownPayment from "../ApplicationForm/DownPayment";
 import FoundProperty from "../ApplicationForm/FoundProperty";
 import RealtorDetails from "../ApplicationForm/RealtorDetails";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-
 const totalSteps = 7;
-
+import toast from "react-hot-toast";
 export default function ApplicationForm() {
   const router = useRouter();
   const pathname = usePathname();
-
+const searchParams = useSearchParams();
   const [isClient, setIsClient] = useState(false);
   const [selected, setSelected] = useState<string>("");
   const [formData, setFormData] = useState({
@@ -106,13 +105,19 @@ export default function ApplicationForm() {
   // ✅ Handle submit
  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-  const applicationId = localStorage.getItem("applicationId");
+    const isNew = searchParams.get("new") === "true";
+  const source = searchParams.get("source");
+  let applicationId: string | null = null;
+  if (!(isNew && source === "dashboard")) {
+    applicationId = localStorage.getItem("applicationId");
     if (!applicationId) {
-      alert("❌ Application ID not found in localStorage!");
+      toast.error("❌ Application ID not found in localStorage!");
       return;
     }
+  }
+ 
   const payload: any = {
-    applicationId,
+     ...(applicationId ? { applicationId } : {}),
     currentState: currentStep,
     basicDetails: [
       {
@@ -169,7 +174,7 @@ export default function ApplicationForm() {
       },
     ],
   };
-
+ 
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -177,14 +182,22 @@ export default function ApplicationForm() {
     const savedApp = localStorage.getItem("selectedApplication");
     let url = "https://bdapi.testenvapp.com/api/v1/user-applications";
     let method: "POST" | "PUT" = "POST";
+const isNew = searchParams.get("new") === "true";
+      const source = searchParams.get("source");
 
-    if (savedApp) {
-      const parsed = JSON.parse(savedApp);
-      if (parsed._id) {
-        url = `${url}/update`;
-        method = "PUT";
+      if (isNew && source === "dashboard") {
+        method = "POST"; // create
+        url = "https://bdapi.testenvapp.com/api/v1/user-applications";
 
-      }
+        // optional: clear old saved application
+        localStorage.removeItem("selectedApplication");
+      } else if (savedApp) {
+        const parsed = JSON.parse(savedApp);
+        if (parsed._id) {
+          url = `${url}/update`;
+          method = "PUT";
+        }
+      
     }
 
     const res = await fetch(url, {
@@ -201,16 +214,21 @@ export default function ApplicationForm() {
       data = await res.json();
     } catch {}
 
-    if (res.ok) {
-      localStorage.setItem(
-        "selectedApplication",
-        JSON.stringify(data.data || payload)
-      );
+   if (res.ok && (res.status === 200 || res.status === 201)) {
+      const storedData = data.data || payload;
+
+  // ✅ Save whole object
+  localStorage.setItem("selectedApplication", JSON.stringify(storedData));
+
+       if (storedData._id) {
+    localStorage.setItem("applicationId", storedData._id);
+  }
+  toast.success("Application saved successfully!");
       console.log("✅ Application stored:", data.data || payload);
       setApiResponse(data);
       router.push(`/dashboard/application/step${currentStep + 1}`);
     } else {
-      alert(`Submission failed! Status: ${res.status}`);
+      toast.error(`Submission failed! Status: ${res.status}`);
       console.error("❌ Error Response:", data);
     }
   } catch (err) {

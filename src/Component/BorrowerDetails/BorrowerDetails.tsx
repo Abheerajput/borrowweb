@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
+import toast from "react-hot-toast";
 const totalSteps = 7;
 
 interface BorrowerDetailsProps {
@@ -150,7 +150,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   const applicationId = localStorage.getItem("applicationId");
   if (!applicationId) {
-    alert("❌ Application ID not found in localStorage!");
+    toast.error("❌ Application ID not found in localStorage!");
     return;
   }
 
@@ -179,15 +179,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     );
 
     if (res.status === 200 || res.status === 201) {
-      alert("✅ Form updated successfully!");
-      console.log("✅ API Response:", res.data);
+      toast.success("Form updated successfully!");
     } else {
-      alert(`❌ Update failed! Status: ${res.status}`);
-      console.error("❌ Error Response:", res.data);
+      toast.error(`❌ Update failed! Status: ${res.status}`);
     }
   } catch (err) {
-    console.error("❌ Error updating form:", err);
-    alert("Something went wrong while updating!");
+    toast.error("❌ Error updating form:", err);
   }
 };
 

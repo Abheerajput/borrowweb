@@ -5,6 +5,7 @@ import { IoIosArrowForward, IoMdArrowRoundBack } from "react-icons/io";
 import BorrowerDetails from "../../../../Component/BorrowerDetails/BorrowerDetails";
 import { usePathname } from "next/navigation";
 const totalSteps = 7;
+import toast from "react-hot-toast";
 const BorrowersPage = () => {
   const [borrowers, setBorrowers] = useState<string[]>([
     "Borrower 1",
@@ -22,28 +23,30 @@ const BorrowersPage = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
+  
+  const [open, setOpen] = useState(false);
+  const steps = [
+    { label: "Home", route: "/dashboard/application" },
+    { label: "Basic Details", route: "/dashboard/application/step1" },
+    { label: "Borrowers", route: "/dashboard/application/step2" },
+    { label: "Documents", route: "/dashboard/application/step3" },
+    { label: "Income", route: "/dashboard/application/step4" },
+    { label: "Assets", route: "/dashboard/application/step5" },
+    { label: "Properties", route: "/dashboard/application/step6" },
+    { label: "Referral", route: "/dashboard/application/step7" },
+  ];
+  const [selected, setSelected] = useState(steps[2]);
+
   if (activeBorrower) {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <BorrowerDetails
           borrowerName={activeBorrower || ''}
           onBack={() => setActiveBorrower(null)}
-        />
+          />
       </div>
     );
   }
-   const [open, setOpen] = useState(false);
-   const steps = [
-     { label: "Home", route: "/dashboard/application" },
-     { label: "Basic Details", route: "/dashboard/application/step1" },
-     { label: "Borrowers", route: "/dashboard/application/step2" },
-  { label: "Documents", route: "/dashboard/application/step3" },
-  { label: "Income", route: "/dashboard/application/step4" },
-  { label: "Assets", route: "/dashboard/application/step5" },
-  { label: "Properties", route: "/dashboard/application/step6" },
-  { label: "Referral", route: "/dashboard/application/step7" },
-];
-const [selected, setSelected] = useState(steps[2]);
   return (
     <div className="min-h-screen min-w-full flex flex-col ">
       <div className="flex justify-between">

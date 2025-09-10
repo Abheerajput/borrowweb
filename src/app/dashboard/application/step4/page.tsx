@@ -1,5 +1,3 @@
-// src/app/dashboard/application/step4/page.tsx
-
 "use client";
 
 import React, { useEffect, useState, FormEvent } from "react";
@@ -17,6 +15,7 @@ import OtherIncomeForm from "../OtherIncomeForm/OtherIncomeForm";
 // Assets
 import img1 from "../../../../../public/assets/selfemployed.png";
 import img2 from "../../../../../public/assets/other.png";
+import toast from "react-hot-toast";
 
 const totalSteps = 7;
 
@@ -24,23 +23,24 @@ export interface IFormData {
   incomeType: "Employed" | "Self-Employed" | "Other";
 
   // Employed
-  isCurrentEmployment?: boolean;
-  companyName?: string;
-  companyAddress?: string;
+  currentEmployment?: { id: number; label: string };
+  companyaddress?: string;
   jobTitle?: string;
-  workType?: "Full Time" | "Part Time" | "Seasonal";
-  receivesBonus?: boolean;
-  receivesBenefits?: boolean;
+  workOftenData?: { id: number; label: string };
+  bonusOvertime?: { id: number; label: string };
+  benifits?: { id: number; label: string };
   annualIncome?: string;
-  industryExperienceYears?: string;
-  industryExperienceMonths?: string;
-  employmentStartDate?: string;
-  employmentEndDate?: string;
-isCurrentIncomeSource?: boolean;
+  workedYear?: string;
+  workedMonth?: string;
+  startworking?: string;
+  stopworking?: string;
+  isCurrentIncomeSource?: boolean;
 
   // Self-Employed
-  businessName?: string;
   businessAddress?: string;
+  businessName?: string;
+  businessTypeData?: { id: number; label: string };
+  payYourself?: { id: number; title: string; image: number };
   businessType?: string;
   businessStructure?: "Corporation" | "Sole Proprietor" | "Partnership";
   paymentMethod?: "T4" | "Business Income" | "Dividends" | "Commission";
@@ -49,8 +49,8 @@ isCurrentIncomeSource?: boolean;
   netAnnualIncome?: string;
 
   // Other Income
-  otherIncomeType?: string;
-  otherIncomeName?: string;
+  incomeTypeData?: { id: number; label: string };
+  startRecieve?: string;
   otherAnnualIncome?: string;
   otherIncomeStartDate?: string;
 }
@@ -64,30 +64,50 @@ const IncomePage: React.FC = () => {
 
   const [formData, setFormData] = useState<IFormData>({
     incomeType: "Employed",
-    isCurrentEmployment: true,
-    companyName: "",
-    companyAddress: "",
+    currentEmployment: { id: 1, label: "Yes" },
+    companyaddress: "",
     jobTitle: "",
-    workType: "Full Time",
-    receivesBonus: false,
-    receivesBenefits: false,
+    workOftenData: { id: 1, label: "Full Time" },
+    bonusOvertime: { id: 1, label: "No" },
+    benifits: { id: 1, label: "No" },
     annualIncome: "",
-    industryExperienceYears: "",
-    industryExperienceMonths: "",
-    employmentStartDate: "",
-    employmentEndDate: "",
+    workedYear: "",
+    workedMonth: "",
+    startworking: "",
+    stopworking: "",
+    isCurrentIncomeSource: true,
   });
 
   const [isClient, setIsClient] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const steps = [
+    { label: "Home", route: "/dashboard/application" },
+    { label: "Basic Details", route: "/dashboard/application/step1" },
+    { label: "Borrowers", route: "/dashboard/application/step2" },
+    { label: "Documents", route: "/dashboard/application/step3" },
+    { label: "Income", route: "/dashboard/application/step4" },
+    { label: "Assets", route: "/dashboard/application/step5" },
+    { label: "Properties", route: "/dashboard/application/step6" },
+    { label: "Referral", route: "/dashboard/application/step7" },
+  ];
+
+  const [selected, setSelected] = useState(steps[4]);
 
   // ✅ Load saved data from localStorage
   useEffect(() => {
     setIsClient(true);
-    if (typeof window !== "undefined") {
-      const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "null");
-      if (storedApp?.income?.[0]) {
-        setFormData(storedApp.income[0]);
+
+    try {
+      const storedApp = localStorage.getItem("selectedApplication");
+      if (storedApp) {
+        const parsedApp = JSON.parse(storedApp);
+        if (parsedApp.income && Array.isArray(parsedApp.income) && parsedApp.income[0]) {
+          setFormData((prev) => ({ ...prev, ...parsedApp.income[0] }));
+        }
       }
+    } catch (error) {
+      console.error("Failed to load stored application:", error);
     }
   }, []);
 
@@ -96,23 +116,25 @@ const IncomePage: React.FC = () => {
     const newForm = { ...formData, ...updatedData };
     setFormData(newForm);
 
-    const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
-    storedApp.income = [newForm];
-    storedApp.currentState = currentStep;
-
-    localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
+    try {
+      const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+      storedApp.income = [newForm];
+      storedApp.currentState = currentStep;
+      localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
+    } catch (error) {
+      console.error("Failed to update localStorage:", error);
+    }
   };
 
   const handleIncomeTypeChange = (type: IFormData["incomeType"]) => {
-    const baseData = { incomeType: type };
-    let newFormData: Partial<IFormData> = {};
+    let newFormData: Partial<IFormData> = { incomeType: type };
 
     if (type === "Employed") {
-      newFormData = { ...baseData, workType: "Full Time" };
+      newFormData = { ...newFormData, workOftenData: { id: 1, label: "Full Time" } };
     } else if (type === "Self-Employed") {
-      newFormData = { ...baseData, businessStructure: "Sole Proprietor" };
+      newFormData = { ...newFormData, businessStructure: "Sole Proprietor" };
     } else if (type === "Other") {
-      newFormData = { ...baseData, otherIncomeType: "Canadian Pension Plan(CPP)" };
+      newFormData = { ...newFormData, incomeTypeData: { id: 1, label: "Canadian Pension Plan(CPP)" } };
     }
 
     handleDataChange(newFormData as IFormData);
@@ -124,23 +146,19 @@ const IncomePage: React.FC = () => {
 
     const applicationId = localStorage.getItem("applicationId");
     if (!applicationId) {
-      alert("❌ Application ID not found in localStorage!");
+      toast.error("❌ Application ID not found in localStorage!");
       return;
     }
 
     const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
-
     const payload = {
       applicationId,
       currentState: currentStep,
       income: storedApp.income || [formData],
     };
 
-    console.log("📦 Final Payload:", payload);
-
     try {
       const token = localStorage.getItem("token");
-
       const response = await axios.put(
         "https://bdapi.testenvapp.com/api/v1/user-applications/update",
         payload,
@@ -153,14 +171,14 @@ const IncomePage: React.FC = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        alert("✅ Income updated successfully!");
+        toast.success("Income updated successfully!");;
+        
         router.push("/dashboard/application/step5");
       } else {
-        alert(`❌ Update failed! Status: ${response.status}`);
+        toast.error(`❌ Update failed! Status: ${response.status}`);
       }
     } catch (error) {
-      console.error("❌ Failed to update income:", error);
-      alert("Failed to update income. Check console for details.");
+      toast.error("❌ Failed to update income:", error);
     }
   };
 
@@ -177,71 +195,59 @@ const IncomePage: React.FC = () => {
     }
   };
 
-
-  const [open, setOpen] = useState(false);
-     const steps = [
-       { label: "Home", route: "/dashboard/application" },
-       { label: "Basic Details", route: "/dashboard/application/step1" },
-       { label: "Borrowers", route: "/dashboard/application/step2" },
-    { label: "Documents", route: "/dashboard/application/step3" },
-    { label: "Income", route: "/dashboard/application/step4" },
-    { label: "Assets", route: "/dashboard/application/step5" },
-    { label: "Properties", route: "/dashboard/application/step6" },
-    { label: "Referral", route: "/dashboard/application/step7" },
-  ];
-  const [selected, setSelected] = useState(steps[4]);
-
   return (
     <div className="min-w-full">
       <div className="flex justify-between text-black">
+        {/* Back / Dropdown */}
         <div className="relative inline-block text-left">
-      <div className="flex items-center gap-2">
-        <IoMdArrowRoundBack className="text-black" />
-        <button
-          type="button"
-          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
-          onClick={() => setOpen(!open)}
-        >
-          {selected.label}
-          <svg
-            className="-mr-1 ml-2 h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {open && (
-        <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-          <div className="py-1">
-            {steps.map((step) => (
-              <Link
-                key={step.route}
-                href={step.route}
-                className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
-                  selected.route === step.route ? "font-semibold" : ""
-                }`}
-                onClick={() => {
-                  setSelected(step);
-                  setOpen(false);
-                }}
+          <div className="flex items-center gap-2">
+            <IoMdArrowRoundBack className="text-black" />
+            <button
+              type="button"
+              className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+              onClick={() => setOpen(!open)}
+            >
+              {selected.label}
+              <svg
+                className="-mr-1 ml-2 h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
               >
-                {step.label}
-              </Link>
-            ))}
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
           </div>
-        </div>
-      )}
-    </div>
 
+          {open && (
+            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+              <div className="py-1">
+                {steps.map((step) => (
+                  <Link
+                    key={step.route}
+                    href={step.route}
+                    className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                      selected.route === step.route ? "font-semibold" : ""
+                    }`}
+                    onClick={() => {
+                      setSelected(step);
+                      setOpen(false);
+                    }}
+                  >
+                    {step.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Progress Steps */}
         {isClient && (
           <span className="flex flex-col-reverse items-end gap-2">
             <div className="flex gap-1">
@@ -261,20 +267,20 @@ const IncomePage: React.FC = () => {
         )}
       </div>
 
+      {/* Form Container */}
       <div className="bg-white min-h-screen mt-8 p-6 rounded-xl shadow-md max-w-3xl mx-auto">
         <form onSubmit={handleSubmit}>
-          <h2 className="text-lg text-black font-semibold mb-1">What Type of income do you have?</h2>
+          <h2 className="text-lg text-black font-semibold mb-1">
+            What Type of income do you have?
+          </h2>
           <p className="text-sm text-gray-500 mb-4">
             (You can add more after clicking ‘continue’ at the bottom of the page)
           </p>
 
           {/* Income Type Selection */}
-          <div className="flex flex-wrap gap-4 my-4 mt-8 justify-start ">
+          <div className="flex flex-wrap gap-4 my-4 mt-8 justify-start">
             {[
-              {
-                type: "Employed",
-                icon: <FaRegAddressCard className="w-[3rem] text-gray-600 h-[3rem]" />,
-              },
+              { type: "Employed", icon: <FaRegAddressCard className="w-[3rem] text-gray-600 h-[3rem]" /> },
               { type: "Self-Employed", icon: <Image src={img1} alt="Self-Employed" /> },
               { type: "Other", icon: <Image src={img2} alt="Other Income" /> },
             ].map(({ type, icon }) => (
@@ -290,22 +296,22 @@ const IncomePage: React.FC = () => {
             ))}
           </div>
 
+          {/* Dynamic Form */}
           {renderForm()}
 
+          {/* Navigation Buttons */}
           <div className="mt-8 w-full flex gap-6 justify-between">
             <Link href="/dashboard/application/step3" className="w-1/2">
               <button className="w-full text-black font-semibold py-3 px-8 border rounded-full hover:border-gray-400 transition-colors">
                 Back
               </button>
             </Link>
-            <p className="w-1/2">
-              <button
-                type="submit"
-                className="bg-[#013E8C] w-full text-white font-semibold py-3 px-8 rounded-full hover:bg-blue-800 transition-colors"
-              >
-                Continue
-              </button>
-            </p>
+            <button
+              type="submit"
+              className="bg-[#013E8C] w-1/2 text-white font-semibold py-3 px-8 rounded-full hover:bg-blue-800 transition-colors"
+            >
+              Continue
+            </button>
           </div>
         </form>
       </div>
@@ -314,6 +320,326 @@ const IncomePage: React.FC = () => {
 };
 
 export default IncomePage;
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useEffect, useState } from "react";
+// import { usePathname, useRouter } from "next/navigation";
+// import EmployedForm from "../Employment/EmployedForm";
+// import SelfEmployedForm from "../SelfEmployedForm/SelfEmployedForm";
+// import OtherIncomeForm from "../OtherIncomeForm/OtherIncomeForm";
+
+// // Assets
+// import img1 from "../../../../../public/assets/selfemployed.png";
+// import img2 from "../../../../../public/assets/other.png";
+
+// const totalSteps = 7;
+
+// export interface IFormData {
+//   incomeType: "Employed" | "Self-Employed" | "Other";
+
+//   // Employed
+//   currentEmployment?: { id: number; label: string };
+//   companyName?: string;
+//   jobTitle?: string;
+//   workOftenData?: { id: number; label: string };
+//   bonusOvertime?: { id: number; label: string };
+//   benifits?: { id: number; label: string };
+//   annualIncome?: string;
+//   workedYear?: string;
+//   workedMonth?: string;
+//   startworking?: string;
+//   stopworking?: string;
+//   isCurrentIncomeSource?: boolean;
+
+//   // Self-Employed
+//   businessAddress?: string;
+//   businessName?: string;
+//   businessTypeData?: { id: number; label: string };
+//   payYourself?: { id: number; title: string; image: number };
+//   businessType?: string;
+//   businessStructure?: "Corporation" | "Sole Proprietor" | "Partnership";
+//   paymentMethod?: "T4" | "Business Income" | "Dividends" | "Commission";
+//   selfEmployedStartDate?: string;
+//   selfEmployedEndDate?: string;
+//   netAnnualIncome?: string;
+
+//   // Other Income
+//   incomeTypeData?: { id: number; label: string };
+//   startRecieve?: string;
+//   otherAnnualIncome?: string;
+//   otherIncomeStartDate?: string;
+// }
+
+// const IncomePage: React.FC = () => {
+//   const pathname = usePathname();
+//   const router = useRouter();
+
+//   const stepMatch = pathname.match(/step(\d+)/);
+//   const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
+
+//   const [formData, setFormData] = useState<IFormData>({
+//     incomeType: "Employed",
+//     currentEmployment: { id: 1, label: "Yes" },
+//     companyName: "",
+//     jobTitle: "",
+//     workOftenData: { id: 1, label: "Full Time" },
+//     bonusOvertime: { id: 1, label: "No" },
+//     benifits: { id: 1, label: "No" },
+//     annualIncome: "",
+//     workedYear: "",
+//     workedMonth: "",
+//     startworking: "",
+//     stopworking: "",
+//     isCurrentIncomeSource: true,
+//   });
+
+//   const [isClient, setIsClient] = useState(false);
+
+//   // ✅ Load saved data from localStorage
+//   useEffect(() => {
+//     setIsClient(true);
+//     if (typeof window !== "undefined") {
+//       const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "null");
+//       if (storedApp?.income?.[0]) {
+//         setFormData(storedApp.income[0]);
+//       }
+//     }
+//   }, []);
+
+//   // ✅ Update formData & localStorage
+//   const handleDataChange = (updatedData: Partial<IFormData>) => {
+//     const newForm = { ...formData, ...updatedData };
+//     setFormData(newForm);
+
+//     const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+//     storedApp.income = [newForm];
+//     storedApp.currentState = currentStep;
+
+//     localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
+//   };
+
+//   const handleIncomeTypeChange = (type: IFormData["incomeType"]) => {
+//     const baseData = { incomeType: type };
+//     let newFormData: Partial<IFormData> = {};
+
+//     if (type === "Employed") {
+//       newFormData = { ...baseData, workType: "Full Time" };
+//     } else if (type === "Self-Employed") {
+//       newFormData = { ...baseData, businessStructure: "Sole Proprietor" };
+//     } else if (type === "Other") {
+//       newFormData = { ...baseData, otherIncomeType: "Canadian Pension Plan(CPP)" };
+//     }
+
+//     handleDataChange(newFormData as IFormData);
+//   };
+
+//   // ✅ Submit API call
+//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+
+//     const applicationId = localStorage.getItem("applicationId");
+//     if (!applicationId) {
+//       alert("❌ Application ID not found in localStorage!");
+//       return;
+//     }
+
+//     const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+
+//     const payload = {
+//       applicationId,
+//       currentState: currentStep,
+//       income: storedApp.income || [formData],
+//     };
+
+//     console.log("📦 Final Payload:", payload);
+
+//     try {
+//       const token = localStorage.getItem("token");
+
+//       const response = await axios.put(
+//         "https://bdapi.testenvapp.com/api/v1/user-applications/update",
+//         payload,
+//         {
+//           headers: {
+//             "Content-Type": "application/json",
+//             ...(token ? { Authorization: `${token}` } : {}),
+//           },
+//         }
+//       );
+
+//       if (response.status === 200 || response.status === 201) {
+//         alert("✅ Income updated successfully!");
+//         router.push("/dashboard/application/step5");
+//       } else {
+//         alert(`❌ Update failed! Status: ${response.status}`);
+//       }
+//     } catch (error) {
+//       console.error("❌ Failed to update income:", error);
+//       alert("Failed to update income. Check console for details.");
+//     }
+//   };
+
+//   const renderForm = () => {
+//     switch (formData.incomeType) {
+//       case "Employed":
+//         return <EmployedForm data={formData} onDataChange={handleDataChange} />;
+//       case "Self-Employed":
+//         return <SelfEmployedForm data={formData} onDataChange={handleDataChange} />;
+//       case "Other":
+//         return <OtherIncomeForm data={formData} onDataChange={handleDataChange} />;
+//       default:
+//         return null;
+//     }
+//   };
+
+
+//   const [open, setOpen] = useState(false);
+//      const steps = [
+//        { label: "Home", route: "/dashboard/application" },
+//        { label: "Basic Details", route: "/dashboard/application/step1" },
+//        { label: "Borrowers", route: "/dashboard/application/step2" },
+//     { label: "Documents", route: "/dashboard/application/step3" },
+//     { label: "Income", route: "/dashboard/application/step4" },
+//     { label: "Assets", route: "/dashboard/application/step5" },
+//     { label: "Properties", route: "/dashboard/application/step6" },
+//     { label: "Referral", route: "/dashboard/application/step7" },
+//   ];
+//   const [selected, setSelected] = useState(steps[4]);
+
+//   return (
+//     <div className="min-w-full">
+//       <div className="flex justify-between text-black">
+//         <div className="relative inline-block text-left">
+//       <div className="flex items-center gap-2">
+//         <IoMdArrowRoundBack className="text-black" />
+//         <button
+//           type="button"
+//           className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+//           onClick={() => setOpen(!open)}
+//         >
+//           {selected.label}
+//           <svg
+//             className="-mr-1 ml-2 h-5 w-5"
+//             xmlns="http://www.w3.org/2000/svg"
+//             viewBox="0 0 20 20"
+//             fill="currentColor"
+//             aria-hidden="true"
+//           >
+//             <path
+//               fillRule="evenodd"
+//               d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
+//               clipRule="evenodd"
+//             />
+//           </svg>
+//         </button>
+//       </div>
+
+//       {open && (
+//         <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+//           <div className="py-1">
+//             {steps.map((step) => (
+//               <Link
+//                 key={step.route}
+//                 href={step.route}
+//                 className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+//                   selected.route === step.route ? "font-semibold" : ""
+//                 }`}
+//                 onClick={() => {
+//                   setSelected(step);
+//                   setOpen(false);
+//                 }}
+//               >
+//                 {step.label}
+//               </Link>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+
+//         {isClient && (
+//           <span className="flex flex-col-reverse items-end gap-2">
+//             <div className="flex gap-1">
+//               {Array.from({ length: totalSteps }).map((_, index) => (
+//                 <div
+//                   key={index}
+//                   className={`h-1.5 w-5 rounded-full ${
+//                     index < currentStep ? "bg-[#013E8C]" : "bg-gray-200"
+//                   }`}
+//                 ></div>
+//               ))}
+//             </div>
+//             <h1 className="text-sm text-black font-medium">
+//               {currentStep} of {totalSteps}
+//             </h1>
+//           </span>
+//         )}
+//       </div>
+
+//       <div className="bg-white min-h-screen mt-8 p-6 rounded-xl shadow-md max-w-3xl mx-auto">
+//         <form onSubmit={handleSubmit}>
+//           <h2 className="text-lg text-black font-semibold mb-1">What Type of income do you have?</h2>
+//           <p className="text-sm text-gray-500 mb-4">
+//             (You can add more after clicking ‘continue’ at the bottom of the page)
+//           </p>
+
+//           {/* Income Type Selection */}
+//           <div className="flex flex-wrap gap-4 my-4 mt-8 justify-start ">
+//             {[
+//               {
+//                 type: "Employed",
+//                 icon: <FaRegAddressCard className="w-[3rem] text-gray-600 h-[3rem]" />,
+//               },
+//               { type: "Self-Employed", icon: <Image src={img1} alt="Self-Employed" /> },
+//               { type: "Other", icon: <Image src={img2} alt="Other Income" /> },
+//             ].map(({ type, icon }) => (
+//               <div
+//                 key={type}
+//                 onClick={() => handleIncomeTypeChange(type as IFormData["incomeType"])}
+//                 className={`min-w-[180px] border flex p-2 justify-center items-center h-[90px] rounded-xl cursor-pointer transition-all ${
+//                   formData.incomeType === type ? "border-blue-600 border-2" : "border-[#E9E9E9]"
+//                 }`}
+//               >
+//                 {icon}
+//               </div>
+//             ))}
+//           </div>
+
+//           {renderForm()}
+
+//           <div className="mt-8 w-full flex gap-6 justify-between">
+//             <Link href="/dashboard/application/step3" className="w-1/2">
+//               <button className="w-full text-black font-semibold py-3 px-8 border rounded-full hover:border-gray-400 transition-colors">
+//                 Back
+//               </button>
+//             </Link>
+//             <p className="w-1/2">
+//               <button
+//                 type="submit"
+//                 className="bg-[#013E8C] w-full text-white font-semibold py-3 px-8 rounded-full hover:bg-blue-800 transition-colors"
+//               >
+//                 Continue
+//               </button>
+//             </p>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default IncomePage;
 
 // // src/app/dashboard/application/step4/page.tsx (or your file path)
 

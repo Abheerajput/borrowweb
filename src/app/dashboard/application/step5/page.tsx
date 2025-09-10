@@ -6,6 +6,7 @@ import React, { useEffect, useState, FormEvent } from "react";
 import { FaGift, FaCouch, FaCarAlt, FaUmbrella, FaDollarSign, FaLightbulb } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const totalSteps = 7;
 
@@ -20,6 +21,18 @@ type AllAssetsData = {
   [key in AssetType]: AssetData;
 };
 
+interface AssetMeta {
+  id?: number;
+  title: string;
+  image?: number;
+}
+
+const assetMeta: Record<AssetType, AssetMeta> = {
+  "Gift from Family": { id: 1, title: "Gift from Family", image: 55 },
+  "Household Goods": { id: 2, title: "Household Goods", image: 56 },
+  "Vehicle": { id: 3, title: "Vehicle", image: 57 },
+  "Life Insurance": { id: 4, title: "Life Insurance", image: 58 },
+};
 const assetTypes: { name: AssetType; icon: React.ReactNode }[] = [
   { name: "Gift from Family", icon: <FaGift className="h-6 w-6" /> },
   { name: "Household Goods", icon: <FaCouch className="h-6 w-6" /> },
@@ -46,121 +59,160 @@ const AssetsPage: React.FC = () => {
   const stepMatch = pathname.match(/step(\d+)/);
   const currentStep = stepMatch ? parseInt(stepMatch[1]) : 1;
 
-  // ✅ Load saved data from localStorage
-  useEffect(() => {
-    setIsClient(true);
-    if (typeof window !== "undefined") {
-      const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "null");
-      if (storedApp?.assets) {
-        const restoredAssets = createInitialState();
-        storedApp.assets.forEach((asset: any) => {
-          restoredAssets[asset.name as AssetType] = {
-            value: asset.value || "",
-            description: asset.description || "",
-          };
-          if (asset.name === "Life Insurance") {
-            setHasLifeInsurance(true);
-          }
-        });
-        setAssetsData(restoredAssets);
-      }
+useEffect(() => {
+  setIsClient(true);
+  if (typeof window !== "undefined") {
+    const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "null");
+    if (storedApp?.assets) {
+      const restoredAssets = createInitialState();
+      let lifeInsuranceValue = false;
+
+      storedApp.assets.forEach((asset: any) => {
+        const key = asset.assetType.title as AssetType;
+
+        restoredAssets[key] = {
+          value: asset.valueOfAsset || "",
+          description: asset.assetDiscription || "",
+        };
+
+        // Set Life Insurance toggle properly
+        if (key === "Life Insurance") {
+          lifeInsuranceValue = asset.lifeInsurance?.label === "Yes";
+        }
+      });
+
+      setAssetsData(restoredAssets);
+      setHasLifeInsurance(lifeInsuranceValue);
     }
-  }, []);
+  }
+}, []);
+
+
 
   // ✅ Handle field change & update localStorage
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
 
-    const updatedData = {
-      ...assetsData,
-      [selectedAsset]: {
-        ...assetsData[selectedAsset],
-        [name]: value,
-      },
+  // Update local state
+  const updatedData = {
+    ...assetsData,
+    [selectedAsset]: {
+      ...assetsData[selectedAsset],
+      [name]: value,
+    },
+  };
+  setAssetsData(updatedData);
+
+  // Convert to backend format safely
+  const assetsArray = Object.entries(updatedData).map(([key, val]) => {
+    const meta = assetMeta[key as AssetType];
+    if (!meta) {
+      console.warn(`⚠️ Unknown asset type: ${key}`);
+      return null; // skip unknown assets
+    }
+
+    const baseAsset: any = {
+      assetType: { id: meta.id, title: meta.title, image: meta.image },
+      valueOfAsset: val.value,
+      assetDiscription: val.description,
     };
 
-    setAssetsData(updatedData);
-
-    // Save to localStorage
-    const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
-    const assetsArray = Object.entries(updatedData).map(([key, val]) => ({
-      name: key,
-      value: val.value,
-      description: val.description,
-    }));
-
-    if (!hasLifeInsurance) {
-      // remove Life Insurance entry if user selected "No"
-      const filtered = assetsArray.filter((a) => a.name !== "Life Insurance");
-      storedApp.assets = filtered;
-    } else {
-      storedApp.assets = assetsArray;
+    if (key === "Life Insurance") {
+      baseAsset.lifeInsurance = { id: 1, label: hasLifeInsurance ? "Yes" : "No" };
     }
 
-    storedApp.currentState = currentStep;
-    localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
-  };
+    return baseAsset;
+  }).filter(Boolean); // remove null entries
+
+  // Remove Life Insurance if "No"
+  const filteredAssets = assetsArray.filter(
+    (a: any) => a.assetType.title !== "Life Insurance" || hasLifeInsurance
+  );
+
+  // Update localStorage
+  const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+  storedApp.assets = filteredAssets;
+  storedApp.currentState = currentStep;
+  localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
+};
+
+
 
   // ✅ Submit handler
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("token");
-      const applicationId = localStorage.getItem("applicationId");
+  try {
+    const token = localStorage.getItem("token");
+    const applicationId = localStorage.getItem("applicationId");
 
-      if (!applicationId) {
-        alert("❌ Application ID not found in localStorage!");
-        return;
-      }
-
-      // Build assets array
-      let assetsArray = Object.entries(assetsData).map(([key, val]) => ({
-        name: key,
-        value: val.value,
-        description: val.description,
-      }));
-
-      if (!hasLifeInsurance) {
-        assetsArray = assetsArray.filter((a) => a.name !== "Life Insurance");
-      }
-
-      const payload = {
-        applicationId,
-        currentState: currentStep,
-        assets: assetsArray,
-      };
-
-      console.log("📦 Final Payload:", payload);
-
-      // Update localStorage also
-      const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
-      storedApp.assets = assetsArray;
-      storedApp.currentState = currentStep;
-      localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
-
-      const response = await axios.put(
-        "https://bdapi.testenvapp.com/api/v1/user-applications/update",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `${token}` } : {}),
-          },
-        }
-      );
-
-      if (response.status === 200 || response.status === 201) {
-        alert("✅ Assets data updated successfully!");
-        router.push("/dashboard/application/step6");
-      } else {
-        alert(`❌ Update failed! Status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("❌ Failed to update assets:", error);
-      alert("Failed to update assets. Check console for details.");
+    if (!applicationId) {
+      alert("❌ Application ID not found in localStorage!");
+      return;
     }
-  };
+
+    const meta = assetMeta[selectedAsset];
+    if (!meta) {
+      alert("❌ Invalid asset type!");
+      return;
+    }
+
+    // Build the single asset object
+    const assetPayload: any = {
+  assetType: { id: meta.id, title: meta.title, image: meta.image },
+  valueOfAsset: assetsData[selectedAsset].value,
+  assetDiscription: assetsData[selectedAsset].description,
+  lifeInsurance: { id: 1, label: hasLifeInsurance ? "Yes" : "No" }, // always included
+};
+
+
+    if (selectedAsset === "Life Insurance") {
+      assetPayload.lifeInsurance = { id: 1, label: hasLifeInsurance ? "Yes" : "No" };
+    }
+
+    // Wrap it in an array with only one object
+    const assetsArray = [assetPayload];
+
+    // Update localStorage
+    const storedApp = JSON.parse(localStorage.getItem("selectedApplication") || "{}");
+    storedApp.assets = assetsArray;
+    storedApp.currentState = currentStep;
+    localStorage.setItem("selectedApplication", JSON.stringify(storedApp));
+
+    // Prepare payload for backend
+    const payload = {
+      applicationId,
+      currentState: currentStep,
+      assets: assetsArray,
+    };
+
+    console.log("📦 Payload to send:", payload);
+
+    const response = await axios.put(
+      "https://bdapi.testenvapp.com/api/v1/user-applications/update",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `${token}` } : {}),
+        },
+      }
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      toast.success(" Asset data updated successfully!");
+      router.push("/dashboard/application/step6");
+    } else {
+      alert(`❌ Update failed! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("❌ Failed to update asset:", error);
+    alert("Failed to update asset. Check console for details.");
+  }
+};
+
+
+
 
   const [open, setOpen] = useState(false);
        const steps = [
@@ -377,6 +429,16 @@ const AssetsPage: React.FC = () => {
 };
 
 export default AssetsPage;
+
+
+
+
+
+
+
+
+
+
 
 // "use client";
 

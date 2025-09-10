@@ -47,9 +47,9 @@ export default function LookingToDo({ selected, setSelected }: LookingToDoProps)
   });
 
   const options = [
-    { value: "buy", label: "Buy a Property" },
-    { value: "refinance", label: "Refinance a Property" },
-    { value: "renew", label: "Renew a Mortgage" },
+    { value: "Buy a Property", label: "Buy a Property" },
+    { value: "Refinance a Property", label: "Refinance a Property" },
+    { value: "Renew a Mortgage", label: "Renew a Mortgage" },
   ];
 
   const handleInputChange = (field: string, value: string) => {

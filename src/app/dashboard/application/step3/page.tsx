@@ -21,15 +21,7 @@ const UpdatePage = () => {
     setIsClient(true);
 }, []);
 
-  if (activeDocument) {
-    return (
-      <div className="min-h-screen min-w-full flex justify-center items-center ">
-        <UploadDocuments DocumentName={activeDocument}
-        //  onBack={() => setactiveDocument(null)}
-          />
-      </div>
-    )
-  }
+  
  const [open, setOpen] = useState(false);
    const steps = [
      { label: "Home", route: "/dashboard/application" },
@@ -42,6 +34,16 @@ const UpdatePage = () => {
   { label: "Referral", route: "/dashboard/application/step7" },
 ];
 const [selected, setSelected] = useState(steps[3]);
+
+if (activeDocument) {
+    return (
+      <div className="min-h-screen min-w-full flex justify-center items-center ">
+        <UploadDocuments DocumentName={activeDocument}
+        //  onBack={() => setactiveDocument(null)}
+          />
+      </div>
+    )
+  }
   return (
 
     <div className="min-h-screen  min-w-full flex flex-col ">

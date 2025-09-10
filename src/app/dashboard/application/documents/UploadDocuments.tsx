@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaRegImage } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const totalSteps = 7;
 
@@ -192,7 +193,7 @@ const handleSave = async () => {
           },
         }
       );
-      console.log("✅ Primary Upload API Response:", primaryUploadRes.data);
+      console.log(" Primary Upload API Response:", primaryUploadRes.data);
       if (primaryUploadRes.data.documents && primaryUploadRes.data.documents.length > 0) {
         uploadedUrls.primaryImageFront = primaryUploadRes.data.documents[0]?.image1?.url || "";
         uploadedUrls.primaryImageBack = primaryUploadRes.data.documents[0]?.image2?.url || "";
@@ -289,7 +290,7 @@ const handleSave = async () => {
     };
     localStorage.setItem("selectedApplication", JSON.stringify(updatedApp));
 
-    alert("Documents uploaded & saved successfully!");
+    toast.success("Documents uploaded & saved successfully!");
     router.push("/dashboard/application/step4");
   } catch (err) {
     console.error("❌ API Error:", err);
