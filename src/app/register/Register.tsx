@@ -31,7 +31,8 @@ const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const type = searchParams.get("type")?.trim().toLowerCase();
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = "https://bdapi.testenvapp.com/api/v1";
   console.log(BASE_URL, "BASE_URLBASE_URL===================");
   const keypartner = type?.toLowerCase() === "keypartner";
   const Borrower = type === "borrower";
