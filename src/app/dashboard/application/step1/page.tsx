@@ -10,6 +10,8 @@ import Link from "next/link";
 const totalSteps = 7;
 import toast from "react-hot-toast";
 export default function ApplicationForm() {
+  const searchParams = useSearchParams();
+
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -29,15 +31,8 @@ export default function ApplicationForm() {
   const [purchasePrice, setPurchasePrice] = useState<string>("");
 const [searchData, setSearchData] = useState<{ isNew: boolean; source: string | null }>({ isNew: false, source: null });
 
-useEffect(() => {
-  const searchParams = useSearchParams();
-  const isNew = searchParams?.get("new") === "true";
-  const source = searchParams?.get("source");
-  setSearchData({ isNew, source });
-}, []);
 
 useEffect(() => {
-  const searchParams = useSearchParams();
   const isNew = searchParams?.get("new") === "true";
   const source = searchParams?.get("source");
   setSearchData({ isNew, source });
@@ -200,24 +195,19 @@ if (!(searchData.isNew && searchData.source === "dashboard")) {
     const savedApp = localStorage.getItem("selectedApplication");
     let url = "https://bdapi.testenvapp.com/api/v1/user-applications";
     let method: "POST" | "PUT" = "POST";
-const searchParams = useSearchParams();
-    const isNew = searchParams?.get("new") === "true";
-      const source = searchParams?.get("source");
+const { isNew, source } = searchData;
 
-      if (isNew && source === "dashboard") {
-        method = "POST"; // create
-        url = "https://bdapi.testenvapp.com/api/v1/user-applications";
-
-        // optional: clear old saved application
-        localStorage.removeItem("selectedApplication");
-      } else if (savedApp) {
-        const parsed = JSON.parse(savedApp);
-        if (parsed._id) {
-          url = `${url}/update`;
-          method = "PUT";
-        }
-      
+    if (isNew && source === "dashboard") {
+      method = "POST";
+      localStorage.removeItem("selectedApplication");
+    } else if (savedApp) {
+      const parsed = JSON.parse(savedApp);
+      if (parsed._id) {
+        url = `${url}/update`;
+        method = "PUT";
+      }
     }
+
 
     const res = await fetch(url, {
       method,
