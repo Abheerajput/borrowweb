@@ -7,6 +7,8 @@ import google from "../../../public/assets/google.png";
 import fb from "../../../public/assets/fb.png";
 import Image from "next/image";
 import PasswordInput from "./PasswordInput";
+import { GoogleLogin } from "@react-oauth/google";
+import {jwtDecode} from "jwt-decode";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -58,83 +60,83 @@ const Page = () => {
     `;
   };
 
-const handleLogin = async () => {
-  if (!email || !password) {
-    setError("Email and password are required");
-    toast.error("Email and password are required");
-    return;
-  }
+// const handleLogin = async () => {
+//   if (!email || !password) {
+//     setError("Email and password are required");
+//     toast.error("Email and password are required");
+//     return;
+//   }
 
-  try {
-    setLoading(true);
-    setError("");
+//   try {
+//     setLoading(true);
+//     setError("");
 
-    const response = await axios.post(`${BASE_URL}/login`, {
-      email,
-      password,
-    });
+//     const response = await axios.post(`${BASE_URL}/login`, {
+//       email,
+//       password,
+//     });
 
-    if (response.status === 201) {
-      const user = response.data.data;
+//     if (response.status === 201) {
+//       const user = response.data.data;
 
-      // Get role from URL
-      let urlRole = type?.toLowerCase();
+//       // Get role from URL
+//       let urlRole = type?.toLowerCase();
 
-if (urlRole === "borrower") {
-  urlRole = "borrow";
-}
-if (urlRole === "Lender") {
-  urlRole = "lender";
-}
-if (urlRole === "Keypartner") {
-  urlRole = "Keypartner";
-}
- // "lender", "borrower", "keypartner"
+// if (urlRole === "borrower") {
+//   urlRole = "borrow";
+// }
+// if (urlRole === "Lender") {
+//   urlRole = "lender";
+// }
+// if (urlRole === "Keypartner") {
+//   urlRole = "Keypartner";
+// }
+//  // "lender", "borrower", "keypartner"
 
-      // Compare roles
-      if (urlRole && user.role.toLowerCase() !== urlRole) {
-        toast.error("You are not authorized for this role");
-        return; // Stop here, don't store anything
-      }
-for (const key in user) {
-  if (user.hasOwnProperty(key)) {
-    const value = user[key];
-    if (typeof value === "string") {
-      localStorage.setItem(key, value); // store raw string
-    } else {
-      localStorage.setItem(key, JSON.stringify(value)); // store objects/arrays
-    }
-  }
-}
+//       // Compare roles
+//       if (urlRole && user.role.toLowerCase() !== urlRole) {
+//         toast.error("You are not authorized for this role");
+//         return; // Stop here, don't store anything
+//       }
+// for (const key in user) {
+//   if (user.hasOwnProperty(key)) {
+//     const value = user[key];
+//     if (typeof value === "string") {
+//       localStorage.setItem(key, value); // store raw string
+//     } else {
+//       localStorage.setItem(key, JSON.stringify(value)); // store objects/arrays
+//     }
+//   }
+// }
 
-      // ✅ Save data if authorized
-      localStorage.setItem("token", user.token);
-      localStorage.setItem("userId", user._id);
-      localStorage.setItem("userRole", user.role);
-      localStorage.setItem("userName", `${user.firstName} ${user.lastName}`);
+//       // ✅ Save data if authorized
+//       localStorage.setItem("token", user.token);
+//       localStorage.setItem("userId", user._id);
+//       localStorage.setItem("userRole", user.role);
+//       localStorage.setItem("userName", `${user.firstName} ${user.lastName}`);
 
-      toast.success("Login successful!");
+//       toast.success("Login successful!");
 
-      // Redirect based on role
-      if (user.role === "lender") {
-        router.push("/dashboard/application/lender");
-      } else if (user.role === "borrow") {
-        router.push("/dashboard/application");
-      } else if (user.role === "keypartner") {
-        router.push("/dashboard/application/keypartner");
-      } else {
-        router.push("/dashboard/application"); // default fallback
-      }
-    }
-  } catch (err: any) {
-    const message =
-      err.response?.data?.message || "Login failed. Please try again.";
-    setError(message);
-    toast.error(message);
-  } finally {
-    setLoading(false);
-  }
-};
+//       // Redirect based on role
+//       if (user.role === "lender") {
+//         router.push("/dashboard/application/lender");
+//       } else if (user.role === "borrow") {
+//         router.push("/dashboard/application");
+//       } else if (user.role === "keypartner") {
+//         router.push("/dashboard/application/keypartner");
+//       } else {
+//         router.push("/dashboard/application"); // default fallback
+//       }
+//     }
+//   } catch (err: any) {
+//     const message =
+//       err.response?.data?.message || "Login failed. Please try again.";
+//     setError(message);
+//     toast.error(message);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 
 
   const handleRegister = async () => {
@@ -192,7 +194,7 @@ for (const key in user) {
     console.log("Registration successful:", response.data);
 
     if (response.status === 201) {
-      localStorage.setItem("userEmail", email);
+      localStorage.setItem("email", email);
       localStorage.setItem("userId", response.data.userId);
       router.push("/verify");
     } else {
@@ -211,9 +213,28 @@ for (const key in user) {
   }
 };
 
+ const handleGoogleSuccess = (credentialResponse: any) => {
+    if (credentialResponse.credential) {
+      const decoded: any = jwtDecode(credentialResponse.credential);
+      console.log("Google User:", decoded);
+
+      // Example: store user in localStorage
+      localStorage.setItem("user", JSON.stringify(decoded));
+
+      // TODO: Call your backend API here to handle login/registration
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error("Google Login Failed");
+  };
+  const handleLogin = () => {
+    // Redirect to your backend's Google login route
+    window.location.href = "https://gymbackend-gcch.onrender.com/auth/google";
+  };
 
   return (
-    <div className=" py-10 min-w-full px-[4%] bg-white min-h-screen flex flex-col items-center">
+    <div className="  min-w-full px-[4%] py-[2%] bg-white hide-scrollbar h-screen overflow-auto flex flex-col items-center">
       {/* Tabs */}
       <div className="bg-[#F1F1F1] py-[6px] px-2 w-[80%] max-w-xl flex items-center justify-between rounded-full mb-2 shadow-sm">
         <div
@@ -457,7 +478,9 @@ for (const key in user) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-2 w-full h-[40px] px-4 border text-black border-[#D9D9D9] rounded-full focus:outline-none font-normal focus:ring-2 focus:ring-blue-500"
+                required
               />
+              
             </div>
 
             <div className="grid grid-cols-1  gap-6">
@@ -469,14 +492,42 @@ for (const key in user) {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+<div className="text-right py-3 text-sm">
+  <span
+    onClick={async () => {
+      if (!email) {
+        alert("Please enter your email");
+        return;
+      }
 
-            <div className="text-right py-3 text-sm">
-              <Link href="/forgotpassword">
-                <span className="text-[#013E8C] cursor-pointer">
-                  Forgot Password?
-                </span>
-              </Link>
-            </div>
+      try {
+        // Store email in localStorage
+        localStorage.setItem("email", email);
+      localStorage.setItem("key", "12345678");
+        // Call the API to send OTP
+        const response = await axios.post(`${BASE_URL}/sendOtp`, { email });
+
+        if (response.status === 201) {
+          toast.success("OTP has been sent to your email");
+          // Optionally, navigate to the OTP verification page
+          window.location.href = "/verify";
+        } else {
+          alert(response.data.message || "Failed to send OTP");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong. Please try again.");
+      }
+    }}
+    className={`${
+      email ? "text-[#013E8C] cursor-pointer" : "text-gray-400 cursor-not-allowed"
+    }`}
+  >
+    Forgot Password?
+  </span>
+</div>
+
+
 
             <button
               type="button"
@@ -491,21 +542,21 @@ for (const key in user) {
       )}
 
       {/* Common Footer */}
-      <div className="mt-4 flex flex-col items-center gap-2">
-        <Image src={loginimg} alt="Login Visual" className="w-[280px] " />
-        <div className="flex gap-6">
-          <Image
-            src={google}
-            alt="Google Login"
-            className="w-[50px] hover:scale-105 transition"
-          />
-          <Image
-            src={fb}
-            alt="Facebook Login"
-            className="w-[50px] hover:scale-105 transition"
-          />
-        </div>
+     <div className="mt-4 flex flex-col items-center gap-2">
+      <Image src={loginimg} alt="Login Visual" className="w-[280px]" />
+
+      <div className="flex gap-6">
+        {/* Replace Image click with Google Login */}
+        <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
+
+        {/* Facebook button (not yet integrated) */}
+        <Image
+          src={fb}
+          alt="Facebook Login"
+          className="w-[50px] hover:scale-105 transition cursor-pointer"
+        />
       </div>
+    </div>
     </div>
   );
 };

@@ -20,9 +20,9 @@ const page = () => {
   if (!isClient) return null; // Prevent rendering on server
 
   return (
-    <div className='px-[5%] bg-white  min-h-screen  py-[2%] '>
+    <div className='px-[5%] bg-white  min-h-screen  '>
         <div className='flex xs:flex-col bg-white w-full gap-6'>
-  <div className="w-[40%] py-[1%] xs:hidden min-h-screen  bg-white  xs:w-full">
+  <div className="w-[40%] py-[1%] xs:hidden h-screen  bg-white  xs:w-full">
 <div className='backgroundimg w-full  min-h-full rounded-xl bg-cover bg-center flex flex-col justify-start items-center px-6'style={{ backgroundImage: `url(${backgroundimg.src})` }}>
  <div className="flex flex-col xs:hidden xs:max-h-[50vh] xs:min-h-[49vh] w-full max-w-lg gap-6 pt-4">
               <div className="">
@@ -44,11 +44,8 @@ const page = () => {
 
 
 
-<div className='w-[60%] xs:min-w-[100%]  bg-white  items-center flex justify-center'>
-   
-{/* <Choose/> */}
+  <div className="w-[60%] xs:w-full bg-white flex justify-center items-start overflow-y-auto">   
 <Register/>
-{/* <Verify/> */}
 
 
         </div>

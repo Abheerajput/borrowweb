@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import useRouter
 import axios from "axios"; // Import axios
+import toast from "react-hot-toast";
 
 const VerifyPage = () => {
   // Renamed 'page' to 'VerifyPage' for clarity
@@ -55,87 +56,80 @@ const VerifyPage = () => {
       inputRefs.current[index - 1]?.focus();
     }
   };
+const handleVerify = async () => {
+  setError("");
+  setSuccessMessage("");
+  setLoading(true);
 
-  const handleVerify = async () => {
-    setError("");
-    setSuccessMessage("");
-    setLoading(true);
+  const enteredOtp = otp.join(""); // assuming otp is an array of 6 digits
 
-    const enteredOtp = otp.join("");
+  if (enteredOtp.length !== 6 || isNaN(Number(enteredOtp))) {
+    toast.error("Please enter a valid 6-digit OTP.");
+    setLoading(false);
+    return;
+  }
 
-    if (enteredOtp.length !== 6 || isNaN(Number(enteredOtp))) {
-      setError("Please enter a valid 6-digit OTP.");
-      setLoading(false);
-      return;
-    }
+  const email = localStorage.getItem("email"); // get email from localStorage
+  if (!email) {
+    toast.error("User email not found. Please enter your email first.");
+    setLoading(false);
+    return;
+  }
 
-    if (!userEmail && !userPhone) {
-      setError("User email or phone not found. Please register again.");
-      setLoading(false);
-      return;
-    }
-
-    const payload: {
-      email?: string;
-      phone?: number;
-      otpEmail?: number;
-      otpPhone?: number;
-    } = {};
-
-    if (userEmail) {
-      payload.email = userEmail;
-      payload.otpEmail = parseInt(enteredOtp, 10);
-    }
-    if (userPhone) {
-      payload.phone = parseInt(userPhone, 10);
-
-      if (!userEmail) {
-        payload.otpPhone = parseInt(enteredOtp, 10);
-      }
-    }
-
-    if (userEmail && userPhone) {
-      payload.otpEmail = parseInt(enteredOtp, 10);
-    }
-
-    try {
-      const response = await axios.post(
-        "https://bdapi.testenvapp.com/api/v1/verify-otp",
-        payload
-      );
-
-      if (response.status === 201) {
-        const user = response.data.data;
-        setSuccessMessage("Identity verified successfully!");
-        // Clear local storage after successful verification
-        localStorage.removeItem("userPhone");
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("userId");
- if (user.role === "lender") {
-        router.push("/dashboard/application/lender");
-      } else if (user.role === "borrow") {
-        router.push("/dashboard/application");
-      } else if (user.role === "keypartner") {
-        router.push("/dashboard/application/keypartner");
-      } else {
-        router.push("/dashboard/application"); // default fallback
-      }
-    
-      } else {
-        setError(
-          response.data?.message || "OTP verification failed. Please try again."
-        );
-      }
-    } catch (err: any) {
-      console.error("OTP verification error:", err);
-      setError(
-        err.response?.data?.message ||
-          "OTP verification failed. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
+  const payload = {
+    email,
+    otpEmail: parseInt(enteredOtp, 10),
   };
+
+  try {
+    const response = await axios.post(
+      "https://bdapi.testenvapp.com/api/v1/verify-otp",
+      payload
+    );
+
+    if (response.status === 201) {
+      toast.success("Identity verified successfully!");
+      const user = response.data.data;
+
+      if (localStorage.getItem("key")) {
+        router.push("/forgotpassword"); // redirect if key found
+      } else {
+        // Otherwise, do normal role-based routing
+        const role = localStorage.getItem("role");
+        if (role === "lender") {
+          router.push("/dashboard/application/lender");
+        } else if (role === "borrow") {
+          router.push("/dashboard/application");
+        } else if (role === "keypartner") {
+          router.push("/dashboard/application/keypartner");
+        } else {
+          router.push("/dashboard/application");
+        }
+      }
+      
+    } else {
+      // Ignore "Email already verified" for static test key
+      if (localStorage.getItem("key") === "12345678" && response.data?.message?.includes("Email already verified")) {
+        toast.success("Email already verified. Ignoring error.");
+        router.push("/forgotpassword");
+      } else {
+        toast.error(response.data?.message || "OTP verification failed. Please try again.");
+      }
+    }
+  } catch (err: any) {
+    console.error("OTP verification error:", err);
+    if (localStorage.getItem("key") === "12345678" && err.response?.data?.message?.includes("Email already verified")) {
+      toast.success("Email already verified. Ignoring error.");
+      router.push("/forgotpassword");
+    } else {
+      setError(err.response?.data?.message || "OTP verification failed. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <>
@@ -201,11 +195,7 @@ const VerifyPage = () => {
             </div>
           </div>
 
-          {error && <p className="text-green-500 text-sm mt-2">{error}</p>}
-          {successMessage && (
-            <p className="text-green-500 text-sm mt-2">{successMessage}</p>
-          )}
-
+         
           <div className="w-full flex flex-col items-center mt-6">
             <p className="text-[#111827] w-full flex justify-center font-normal">
               Didn’t receive code?

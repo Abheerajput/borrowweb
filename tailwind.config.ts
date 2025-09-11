@@ -41,5 +41,5 @@ export default {
       marquee: 'marquee 25s linear infinite',
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
 }

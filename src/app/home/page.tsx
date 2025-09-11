@@ -73,6 +73,10 @@ const Page = () => {
                 <div className="w-full pt-2">
                   <Link
                     href={{ pathname: "/login", query: { type: "Borrower" } }}
+                       onClick={() => {
+    // Store role in localStorage
+    localStorage.setItem("role", "borrow");
+  }}
                     className="block w-full text-center bg-white py-2.5 xs:text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px]  rounded-full text-[#013E8C] font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Get Started
@@ -92,6 +96,10 @@ const Page = () => {
                 <div className="w-full pt-2">
                   <Link
                     href={{ pathname: "/login", query: { type: "Lender" } }}
+                    onClick={() => {
+    // Store role in localStorage
+    localStorage.setItem("role", "lender");
+  }}
                     className="block w-full text-center bg-white py-2.5 xs:text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px] rounded-full text-[#013E8C] font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Get Started
@@ -111,6 +119,10 @@ const Page = () => {
                 <div className="w-full pt-2">
                   <Link
                     href={{ pathname: "/login", query: { type: "Lawyer" } }}
+                       onClick={() => {
+    // Store role in localStorage
+    localStorage.setItem("role", "lawyer");
+  }}
                     className="block w-full text-center bg-white xs:text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] xl:text-[18px]  py-2.5 rounded-full text-[#013E8C] font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Get Started
@@ -130,6 +142,10 @@ const Page = () => {
                 <div className="w-full pt-2">
                   <Link
                     href={{ pathname: "/keypartner" }}
+                       onClick={() => {
+    // Store role in localStorage
+    localStorage.setItem("role", "keypartner");
+  }}
                     className="block w-full text-center xs:text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] xl:text-[17px]  bg-white py-2.5 rounded-full text-[#013E8C] font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Get Started
