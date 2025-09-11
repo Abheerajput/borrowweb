@@ -7,8 +7,6 @@ import google from "../../../public/assets/google.png";
 import fb from "../../../public/assets/fb.png";
 import Image from "next/image";
 import PasswordInput from "./PasswordInput";
-import { GoogleLogin } from "@react-oauth/google";
-import {jwtDecode} from "jwt-decode";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -60,83 +58,83 @@ const Page = () => {
     `;
   };
 
-// const handleLogin = async () => {
-//   if (!email || !password) {
-//     setError("Email and password are required");
-//     toast.error("Email and password are required");
-//     return;
-//   }
+const handleLogin = async () => {
+  if (!email || !password) {
+    setError("Email and password are required");
+    toast.error("Email and password are required");
+    return;
+  }
 
-//   try {
-//     setLoading(true);
-//     setError("");
+  try {
+    setLoading(true);
+    setError("");
 
-//     const response = await axios.post(`${BASE_URL}/login`, {
-//       email,
-//       password,
-//     });
+    const response = await axios.post(`${BASE_URL}/login`, {
+      email,
+      password,
+    });
 
-//     if (response.status === 201) {
-//       const user = response.data.data;
+    if (response.status === 201) {
+      const user = response.data.data;
 
-//       // Get role from URL
-//       let urlRole = type?.toLowerCase();
+      // Get role from URL
+      let urlRole = type?.toLowerCase();
 
-// if (urlRole === "borrower") {
-//   urlRole = "borrow";
-// }
-// if (urlRole === "Lender") {
-//   urlRole = "lender";
-// }
-// if (urlRole === "Keypartner") {
-//   urlRole = "Keypartner";
-// }
-//  // "lender", "borrower", "keypartner"
+if (urlRole === "borrower") {
+  urlRole = "borrow";
+}
+if (urlRole === "Lender") {
+  urlRole = "lender";
+}
+if (urlRole === "Keypartner") {
+  urlRole = "Keypartner";
+}
+ // "lender", "borrower", "keypartner"
 
-//       // Compare roles
-//       if (urlRole && user.role.toLowerCase() !== urlRole) {
-//         toast.error("You are not authorized for this role");
-//         return; // Stop here, don't store anything
-//       }
-// for (const key in user) {
-//   if (user.hasOwnProperty(key)) {
-//     const value = user[key];
-//     if (typeof value === "string") {
-//       localStorage.setItem(key, value); // store raw string
-//     } else {
-//       localStorage.setItem(key, JSON.stringify(value)); // store objects/arrays
-//     }
-//   }
-// }
+      // Compare roles
+      if (urlRole && user.role.toLowerCase() !== urlRole) {
+        toast.error("You are not authorized for this role");
+        return; // Stop here, don't store anything
+      }
+for (const key in user) {
+  if (user.hasOwnProperty(key)) {
+    const value = user[key];
+    if (typeof value === "string") {
+      localStorage.setItem(key, value); // store raw string
+    } else {
+      localStorage.setItem(key, JSON.stringify(value)); // store objects/arrays
+    }
+  }
+}
 
-//       // ✅ Save data if authorized
-//       localStorage.setItem("token", user.token);
-//       localStorage.setItem("userId", user._id);
-//       localStorage.setItem("userRole", user.role);
-//       localStorage.setItem("userName", `${user.firstName} ${user.lastName}`);
+      // ✅ Save data if authorized
+      localStorage.setItem("token", user.token);
+      localStorage.setItem("userId", user._id);
+      localStorage.setItem("userRole", user.role);
+      localStorage.setItem("userName", `${user.firstName} ${user.lastName}`);
 
-//       toast.success("Login successful!");
+      toast.success("Login successful!");
 
-//       // Redirect based on role
-//       if (user.role === "lender") {
-//         router.push("/dashboard/application/lender");
-//       } else if (user.role === "borrow") {
-//         router.push("/dashboard/application");
-//       } else if (user.role === "keypartner") {
-//         router.push("/dashboard/application/keypartner");
-//       } else {
-//         router.push("/dashboard/application"); // default fallback
-//       }
-//     }
-//   } catch (err: any) {
-//     const message =
-//       err.response?.data?.message || "Login failed. Please try again.";
-//     setError(message);
-//     toast.error(message);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+      // Redirect based on role
+      if (user.role === "lender") {
+        router.push("/dashboard/application/lender");
+      } else if (user.role === "borrow") {
+        router.push("/dashboard/application");
+      } else if (user.role === "keypartner") {
+        router.push("/dashboard/application/keypartner");
+      } else {
+        router.push("/dashboard/application"); // default fallback
+      }
+    }
+  } catch (err: any) {
+    const message =
+      err.response?.data?.message || "Login failed. Please try again.";
+    setError(message);
+    toast.error(message);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   const handleRegister = async () => {
@@ -213,25 +211,6 @@ const Page = () => {
   }
 };
 
- const handleGoogleSuccess = (credentialResponse: any) => {
-    if (credentialResponse.credential) {
-      const decoded: any = jwtDecode(credentialResponse.credential);
-      console.log("Google User:", decoded);
-
-      // Example: store user in localStorage
-      localStorage.setItem("user", JSON.stringify(decoded));
-
-      // TODO: Call your backend API here to handle login/registration
-    }
-  };
-
-  const handleGoogleError = () => {
-    console.error("Google Login Failed");
-  };
-  const handleLogin = () => {
-    // Redirect to your backend's Google login route
-    window.location.href = "https://gymbackend-gcch.onrender.com/auth/google";
-  };
 
   return (
     <div className="  min-w-full px-[4%] py-[2%] bg-white hide-scrollbar h-screen overflow-auto flex flex-col items-center">
@@ -542,21 +521,21 @@ const Page = () => {
       )}
 
       {/* Common Footer */}
-     <div className="mt-4 flex flex-col items-center gap-2">
-      <Image src={loginimg} alt="Login Visual" className="w-[280px]" />
-
-      <div className="flex gap-6">
-        {/* Replace Image click with Google Login */}
-        <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
-
-        {/* Facebook button (not yet integrated) */}
-        <Image
-          src={fb}
-          alt="Facebook Login"
-          className="w-[50px] hover:scale-105 transition cursor-pointer"
-        />
+      <div className="mt-4 flex flex-col items-center gap-2">
+        <Image src={loginimg} alt="Login Visual" className="w-[280px] " />
+        <div className="flex gap-6">
+          <Image
+            src={google}
+            alt="Google Login"
+            className="w-[50px] hover:scale-105 transition"
+          />
+          <Image
+            src={fb}
+            alt="Facebook Login"
+            className="w-[50px] hover:scale-105 transition"
+          />
+        </div>
       </div>
-    </div>
     </div>
   );
 };

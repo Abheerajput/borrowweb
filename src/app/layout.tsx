@@ -3,7 +3,6 @@ import { Metadata } from "next";
 import localFont from "next/font/local";
 import { Poppins } from 'next/font/google';
 import "./globals.css";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "react-hot-toast";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,14 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-   <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} font-poppins`}
-      >
-        <GoogleOAuthProvider clientId="9230365695-1mn9kts94d1fc3uulclph937veatdpi1.apps.googleusercontent.com">
-          {children}
-        </GoogleOAuthProvider>
-        <Toaster position="top-right" reverseOrder={false} />
+    <html lang="en">
+<body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} font-poppins`}>
+        {children}
+              <Toaster position="top-right" reverseOrder={false} />
+
       </body>
     </html>
   );

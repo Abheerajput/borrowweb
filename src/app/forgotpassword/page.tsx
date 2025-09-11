@@ -11,6 +11,7 @@ import google from "../../../public/assets/google.png";
 import fb from "../../../public/assets/fb.png";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { MutableRefObject } from 'react';
 
 const BASE_URL = "https://bdapi.testenvapp.com/api/v1/"; // replace if needed
 
@@ -21,7 +22,7 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const inputsRef: MutableRefObject<(HTMLInputElement | null)[]> = useRef<(HTMLInputElement | null)[]>([]);
 const router = useRouter();
   const handleChange = (e:any, index:any) => {
     const value = e.target.value.replace(/\D/, ""); // only digits
@@ -146,7 +147,9 @@ const newPassword = otp.join("");
       value={otp[index]}
       onChange={(e) => handleChange(e, index)}
       onKeyDown={(e) => handleKeyDown(e, index)}
-      ref={(el) => (inputsRef.current[index] = el)}
+ref={(el) => {
+  inputsRef.current[index] = el;
+}}
       className="w-12 h-12 xs:w-8 xs:h-8 text-center text-lg border border-[#D9D9D9] rounded-full outline-none focus:ring-2 focus:ring-blue-500"
     />
   ))}
